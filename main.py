@@ -28,6 +28,4 @@ if __name__ == '__main__':
                 pygame.quit()
                 exit()
             if event.type == pygame.MOUSEBUTTONDOWN:
-                for i in mls:
-                    print(i)
                 print(event.pos)
