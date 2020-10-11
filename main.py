@@ -8,7 +8,7 @@ from route import *
 
 if __name__ == '__main__':
     pygame.init()  # initializes the pygame object - Required to run the window on screen
-    resolution = (420, 420)  # screen resolution
+    resolution = (600,600) #(420, 420)  # screen resolution
     flags = pygame.DOUBLEBUF
     ThingsToAppearOnScreen_Display = pygame.display.set_mode(resolution,flags)  # This sets the width and height of the screen that pops up
     m = startprgm.start(ThingsToAppearOnScreen_Display)

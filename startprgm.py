@@ -40,15 +40,17 @@ class start:
         return A
 
     def rect_clicked(self,color, row_x , col_y):
-        A = pygame.draw.rect(self.screen, color, [col_y, row_x, self.box_width, self.box_height])   # row_x=row and col_y=col is the position where the box will be displayed
+
+        #Note: Make sure to add the other 2d array values here to store the value - currently this only has the canvas gui aspect functionality to it
+
+        Grid_box_Object = pygame.draw.rect(self.screen, color, [col_y, row_x, self.box_width, self.box_height])   # row_x=row and col_y=col is the position where the box will be displayed
+        text = self.font.render('1', True, (255, 255, 255))
+        self.screen.blit(text, Grid_box_Object.midtop)
         pygame.display.flip()
-        return A
+        return Grid_box_Object
 
     def get_all_rects(self):
         return self.list_of_all_rects
-
-    # def add_text_Box(self,screen):
-    #     return screen.blit(self.font.render('1', True, (255, 255, 255)), (0,0,0))
 
     # Functionality: This function draws the maze on the pygame canvas/screen
     def draw_maze(self,screen, color):
@@ -59,8 +61,8 @@ class start:
                     Grid_box_Object = self.maze_generator(screen, color, i * (self.box_width+1), j * (self.box_height+1))
                     # A = self.add_text_Box(screen)
 
-                    text = self.font.render('1', True, (255, 255, 255))
-                    screen.blit(text, Grid_box_Object.midtop)
+                    # text = self.font.render('1', True, (255, 255, 255))
+                    # screen.blit(text, Grid_box_Object.midtop)
                 if self.maze_array[i, j] == 1:
                     self.maze_generator(screen, (255,255,255), i * (self.box_width + 1), j * (self.box_height + 1)) # +1 is to add a border shade to the cells
 
@@ -135,6 +137,7 @@ class start:
         self.maze_array = np.zeros((self.row, self.col), dtype=int)
         pygame.display.set_caption("MineSweeper", "MS")
         pygame.display.flip()
-        a = mazeGen(ThingsToAppearOnScreen_Display, self.get_arr() , obj)   # MY OWN CLASS
+        a = None
+        #a = mazeGen(ThingsToAppearOnScreen_Display, self.get_arr() , obj)   # MY OWN CLASS
         self.generate_maze(a)   # This function draws the maze
         pygame.display.flip()
