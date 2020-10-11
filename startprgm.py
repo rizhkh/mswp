@@ -39,6 +39,11 @@ class start:
         self.list_of_all_rects.append([row_x,col_y])
         return A
 
+    def rect_clicked(self,color, row_x , col_y):
+        A = pygame.draw.rect(self.screen, color, [col_y, row_x, self.box_width, self.box_height])   # row_x=row and col_y=col is the position where the box will be displayed
+        pygame.display.flip()
+        return A
+
     def get_all_rects(self):
         return self.list_of_all_rects
 
