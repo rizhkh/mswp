@@ -40,6 +40,7 @@ if __name__ == '__main__':
                     y = event.pos[1]
                     if ( x >= i[0] ) and ( x < next_i) :
                         if ( y >= i[1] ) and ( y < next_j) :
+                            m.perform_action_clicked(m, i[1],i[0])
                             print("zxd ", [ i[1],i[0]] )
-                            m.rect_clicked( (150,150,150) , i[1],i[0]) # the reason [1] [0] are in reverse (it should be [0][1] is because pygame is storing index in reverse
+                            #m.rect_clicked( (150,150,150) , i[1],i[0]) # the reason [1] [0] are in reverse (it should be [0][1] is because pygame is storing index in reverse
                             #print(event.pos)
