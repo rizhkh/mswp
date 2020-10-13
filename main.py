@@ -8,7 +8,7 @@ from route import *
 
 if __name__ == '__main__':
     pygame.init()  # initializes the pygame object - Required to run the window on screen
-    resolution = (600,600) #(420, 420)  # screen resolution
+    resolution = (450,450) #(420, 420)  # screen resolution
     flags = pygame.DOUBLEBUF
     ThingsToAppearOnScreen_Display = pygame.display.set_mode(resolution,flags)  # This sets the width and height of the screen that pops up
     m = startprgm.start(ThingsToAppearOnScreen_Display)
@@ -41,6 +41,5 @@ if __name__ == '__main__':
                     if ( x >= i[0] ) and ( x < next_i) :
                         if ( y >= i[1] ) and ( y < next_j) :
                             m.perform_action_clicked(m, i[1],i[0])
-                            print("zxd ", [ i[1],i[0]] )
                             #m.rect_clicked( (150,150,150) , i[1],i[0]) # the reason [1] [0] are in reverse (it should be [0][1] is because pygame is storing index in reverse
                             #print(event.pos)
