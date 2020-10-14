@@ -3,7 +3,6 @@ import startprgm
 import numpy as np
 import time
 from ast import literal_eval
-from route import *
 
 
 if __name__ == '__main__':
