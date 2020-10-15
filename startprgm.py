@@ -112,16 +112,19 @@ class start:
             self.rect_clicked('', color, canvas_arr_i, canvas_arr_j)
 
     # EVERYTHING GOES HERE WHEN A CLICK IS DONES
-    def perform_action_clicked(self,obj,i,j):
+    def click_cell(self,obj,i,j):
         obj = self.environment_class  # do not remove this - obj variable is being passed the reference of global obj this way the refernce is copied in start_algorithm
         # and we dont have pass any obj in main.py
 
         # we are dividing by 20 due do GUI dimension for pycharm - its a scaling issue in GUI
         index_board_i= int(i/20)
         index_board_j= int(j/20)
+        # after this wherever we send i and j we dont need to worry about rescaling issues
+
         #print("index: " , index_board_i , ",", index_board_j)
         val = obj.get_clue(self.board_array , index_board_i, index_board_j)
         self.highlight_board(index_board_i,index_board_j)
+        self.agent_class.process_current_cell(index_board_i,index_board_j)
         #self.scan_board()
 
     def start_algorithm(self, obj, choice, flammability_rate):
@@ -133,12 +136,17 @@ class start:
         pygame.display.flip()
 
         self.environment_class = environment(self.screen, self.board_array, obj)
-        self.agent_class = agnt( self.board_array )
+        # self.agent_class = agnt( self.board_array , self.row, self.col )
+        #
+        # self.agent_class.set_environment_obj(self.environment_class)    # because of this method agent class can use environment methods now
 
-        self.agent_class.set_environment_obj(self.environment_class)    # because of this method agent class can use environment methods now
-
+        #self.agent_class.init_all_cells()
         self.generate_board()   # This function draws the maze
         self.board_array = self.environment_class.add_mines_randomly(self.board_array)
-        print(self.board_array)
+        print(self.board_array) # shows map where the mines are
+
+        self.agent_class = agnt( self.board_array , self.row, self.col )
+
+        self.agent_class.set_environment_obj(self.environment_class)    # because of this method agent class can use environment methods now
 
         pygame.display.flip()

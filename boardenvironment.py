@@ -94,8 +94,6 @@ class environment:
     # Note: Keep track of each location where the mine is placed
     #Functionality: This randomly adds mines on the board
     def add_mines_randomly(self, arr):
-        print(arr)
-        print("************")
         for i in range(0, len(arr) ):
             for j in range(i, len(arr) ):
                 rnum = random.randint(0, 3)
