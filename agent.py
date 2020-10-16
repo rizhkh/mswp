@@ -167,7 +167,10 @@ class agnt:
         return val
 
     def mine_estimate(self, clue, tot_mines, hidden_neighbor_mine):
+        print("ssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss")
+        print(clue , " , " ,(hidden_neighbor_mine + tot_mines))
         if clue == (hidden_neighbor_mine + tot_mines):
+            print("azzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz")
             return True
         return False
         # #number of hidden neighbors = clue - total revealed mines
@@ -231,12 +234,14 @@ class agnt:
             obj.appearing_mines_in_neighbors = mines
 
             obj.print_cell_info()
-            #
-            # a = self.mine_estimate(obj.clue, mines, hidden)
-            #
-            # if a == True:
-            #     returning_list = self.flag_cells( current_neighbors )
-            #     return returning_list
+
+            a = self.mine_estimate(obj.clue, mines, hidden)
+
+            if a == True:
+                print("ssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss")
+                self.flag_cells(current_neighbors)
+                #returning_list = self.flag_cells( current_neighbors )
+                #return returning_list
             #
             # else:
             #     a = self.safe_estimator(obj.clue, visited, hidden)
@@ -248,6 +253,10 @@ class agnt:
             obj = self.get_cur_cell_instance( i )
             obj.status = 1  # whether or not it is a mine or safe
             self.mine_cells.append(i)
+            color = (255, 255, 255)
+            index_i = i[0]
+            index_j = i[1]
+            self.environment_obj.color_cell('', color, index_i, index_j,'flag')
         return neighbor
 
     def flag_cells_as_safe(self, current_neighbors):
@@ -256,7 +265,7 @@ class agnt:
             obj = self.get_cur_cell_instance( i )
             obj.status = 1  # whether or not it is a mine or safe
             obj.status = 0  # whether or not it is a mine or safe
-        return
+        return neighbor
 
 
 

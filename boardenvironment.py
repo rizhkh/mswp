@@ -132,12 +132,29 @@ class environment:
         #self.board_array = np.full((self.row, self.col),int(0))
         self.draw_cells_map( arr,self.screen , (187,187,187)) # Draws out the GUI from the stored array values
 
-    def rect_clicked(self, message,color, row_x , col_y):
-        #Note: Make sure to add the other 2d array values here to store the value - currently this only has the canvas gui aspect functionality to it
-        Grid_box_Object = pygame.draw.rect(self.screen, color, [col_y, row_x, self.box_width, self.box_height])   # row_x=row and col_y=col is the position where the box will be displayed
-        text = self.font.render(message, True, (255, 255, 255))
-        self.screen.blit(text, Grid_box_Object.midtop)
-        pygame.display.flip()
+    def color_cell(self, message,color, row_x , col_y, status):
+        row_x = row_x * 20
+        col_y = col_y * 20
+
+        if status == 0:
+            #Note: Make sure to add the other 2d array values here to store the value - currently this only has the canvas gui aspect functionality to it
+            Grid_box_Object = pygame.draw.rect(self.screen, color, [col_y, row_x, self.box_width, self.box_height])   # row_x=row and col_y=col is the position where the box will be displayed
+            text = self.font.render(message, True, (255, 255, 255))
+            self.screen.blit(text, Grid_box_Object.midtop)
+            pygame.display.flip()
+        if status == 'flag':
+            img = pygame.image.load('flag.png').convert()
+            img = pygame.transform.scale(img, (18, 18))
+            Grid_box_Object = pygame.draw.rect(self.screen, color, [col_y, row_x, self.box_width, self.box_height])   # row_x=row and col_y=col is the position where the box will be displayed
+            self.screen.blit(img, Grid_box_Object)#, Grid_box_Object.midtop)
+            pygame.display.flip()
+        if status == 1:
+            img = pygame.image.load('mine.png').convert()
+            img = pygame.transform.scale(img, (18, 18))
+            Grid_box_Object = pygame.draw.rect(self.screen, color, [col_y, row_x, self.box_width, self.box_height])   # row_x=row and col_y=col is the position where the box will be displayed
+            self.screen.blit(img, Grid_box_Object)#, Grid_box_Object.midtop)
+            pygame.display.flip()
+
         return Grid_box_Object
 
     def get_all_rects(self):
