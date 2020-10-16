@@ -7,7 +7,8 @@ class cell:
     status = None   # whether or not it is a mine or safe
     clue = None # if safe, the number of mines surrounding it indicated by the clue
     safe_n = None   # already revealed cells that are not flagged
-    appearing_mines_in_neighbors = None # number of flagged cells around it or mines
+    appearing_mines_in_neighbors = None # number of revealed cells as mines
+    #flagged_cells_in_neighbors = None  # number of flagged cells as mines in neighbors
     cells_still_unexplored_in_neighbors = None  # number of unexplored neighbors around it
 
     def __init__(self, index, status, mines_surrounding_it_clue, safe_neighbors, mines_indentified_around, hidden_cells_around):

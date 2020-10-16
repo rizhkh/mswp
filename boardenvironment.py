@@ -1,9 +1,15 @@
+import pygame as pygame
 import numpy as np
 from collections import deque
 import random
 
 
 class environment:
+    box_height = 0
+    box_width = 0
+    list_of_all_rects = []
+
+
     row = 10
     col = 10
     total_mines = 10
@@ -21,10 +27,13 @@ class environment:
     start_i = 10    # starting index i for current node (parent node)
     start_j = 10    # starting index j for current node (parent node)
 
-    def __init__(self , scrn, arr, obj):
+    def __init__(self , scrn, arr, obj, bh, bw):
+        self.font = pygame.font.SysFont('Arial', 12)
         self.m = obj    #Copy the ref address in an empty obj -> point towards the orignal address
         self.screen = scrn
         self.maze_array = np.copy(arr)  # (obj.get_arr())
+        self.box_height = bh
+        self.box_width = bw
 
     # Returns value of cell in 2d array
     def get_cell_value(self,arr,i,j):
@@ -103,3 +112,33 @@ class environment:
 
         return arr
 
+
+# Code below is for environmnet GUI
+
+    def board_generator(self, screen, color, row_x , col_y):
+        A = pygame.draw.rect(screen, color, [col_y, row_x, self.box_width, self.box_height])   # row_x=row and col_y=col is the position where the box will be displayed
+        self.list_of_all_rects.append([row_x,col_y])
+        return A
+
+    def draw_cells_map(self, arr,screen, color):
+        pl = 6
+        for i in range(0, self.row):
+            for j in range(0, self.col):
+                #if self.board_array[i,j] == 0:
+                #if arr[i, j] == 0:
+                self.board_generator(screen, color, i * (self.box_width+1), j * (self.box_height+1))
+
+    def generate_board(self, arr):
+        #self.board_array = np.full((self.row, self.col),int(0))
+        self.draw_cells_map( arr,self.screen , (187,187,187)) # Draws out the GUI from the stored array values
+
+    def rect_clicked(self, message,color, row_x , col_y):
+        #Note: Make sure to add the other 2d array values here to store the value - currently this only has the canvas gui aspect functionality to it
+        Grid_box_Object = pygame.draw.rect(self.screen, color, [col_y, row_x, self.box_width, self.box_height])   # row_x=row and col_y=col is the position where the box will be displayed
+        text = self.font.render(message, True, (255, 255, 255))
+        self.screen.blit(text, Grid_box_Object.midtop)
+        pygame.display.flip()
+        return Grid_box_Object
+
+    def get_all_rects(self):
+        return self.list_of_all_rects

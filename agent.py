@@ -30,25 +30,30 @@ from mswp.cellInformation import cell
 class agnt:
 
     #all_cells = dict() #np.zeros((0, 0), dtype=int) # this list is total cells on the board
-    all_cells = []  # this list is total cells on the board
+    all_cells = []  # this list is total cells on the board  # This would store the object of each cell that is visited - we use this list to access all stored information
     visited_cells = []  # just stores index of cells that are visited
     mine_cells = [] # list of cells that are mines and they have been revealed - not hidden on board anymore
-    clear_cells = []
-    list_of_cells_explored_stored_info = [] # This would store the object of each cell that is visited - we use this list to access all stored information
+
+    unvisited_cells = []
 
     environment_obj = None
 
     board_array_agent = np.zeros((0, 0), dtype=int)
     array_board = np.zeros((0, 0), dtype=int) # array val from startprm
+
+    box_height = 0
+    box_width = 0
     row = 0
     col = 0
 
-    def __init__(self, arr, row_dimension, col_dimenison):
+    def __init__(self, arr, row_dimension, col_dimenison,bh,bw):
         self.array_board = np.copy(arr)
         #self.all_cells = np.copy(arr)
         self.row = row_dimension
         self.col = col_dimenison
         self.init_all_cells()
+        self.box_height = bh
+        self.box_width = bw
 
     # This lets agent use environment methods to get cell values and use various other information for its knowledge base that agent should know
     def set_environment_obj(self, obj):
@@ -58,6 +63,7 @@ class agnt:
     def init_all_cells(self):
         for i in range(0, self.row ):
             for j in range ( 0 , self.col):
+                self.unvisited_cells.append([i, j])
                 index = [i,j]
                 status = 'un-visited'
                 mines_surrounding_it_clue = 0
@@ -144,6 +150,14 @@ class agnt:
                 val += 1
         return val
 
+    # Returns list of hidden cells that are neighbors of current cell
+    def get_hidden_cells_list(self, list):
+        ret_list = []
+        for i in list:
+            if (i not in self.visited_cells) and (i not in self.mine_cells):
+                ret_list.append( i )
+        return ret_list
+
     # Returns number of mine cells as neighbors of current cell
     def get_mines_in_neighbor_cells(self, list):
         val = 0
@@ -152,26 +166,26 @@ class agnt:
                 val += 1
         return val
 
-    # for a given cell, the total number of mines (the clue) minus the number of revealed mines is the number of
-    # hidden neighbors, every hidden neighbor is a mine.
-    # [MINES] = number of hidden neighbors / (total number of mines(clue) - number of revealed mines (in neighbor or complete map?))
-    def check_mine(self, clue, tot_mines):
-        hidden_neighbor_mine = clue - tot_mines
-        #number of hidden neighbors = clue - total revealed mines
-        if hidden_neighbor_mine <= 0:
-            return 0
-        return hidden_neighbor_mine
+    def mine_estimate(self, clue, tot_mines, hidden_neighbor_mine):
+        if clue == (hidden_neighbor_mine + tot_mines):
+            return True
+        return False
+        # #number of hidden neighbors = clue - total revealed mines
+        # if hidden_neighbor_mine <= 0:
+        #     return 0
+        # return hidden_neighbor_mine
 
-    # If, for a given cell, the total number of safe neighbors (8 - clue) minus the number of revealed safe neighbors is
-    # the number of hidden neighbors, every hidden neighbor is safe.
-    # [Safe] = number of hidden neighbors / ( the total number of safe neighbors (8 - clue) - the number of revealed safe neighbors)
-    def check_safe(self, clue, tot_rev_neighbors):
-        tot_safe_neighbor = 8 -clue
-        hidden_neighbor_safe = tot_safe_neighbor - tot_rev_neighbors
-        #number of hidden neighbors = total number of safe neighbors (8 - clue) - total revealed neighbors
-        if hidden_neighbor_safe <= 0:
-            return 0
-        return hidden_neighbor_safe
+
+    def safe_estimator(self, clue, tot_rev_neighbors, hidden_neighbor_mine):
+        if (8-clue) == (hidden_neighbor_mine + tot_rev_neighbors):
+            return True
+        return False
+        # tot_safe_neighbor = 8 -clue
+        # hidden_neighbor_safe = tot_safe_neighbor - tot_rev_neighbors
+        # #number of hidden neighbors = total number of safe neighbors (8 - clue) - total revealed neighbors
+        # if hidden_neighbor_safe <= 0:
+        #     return 0
+        # return hidden_neighbor_safe
 
     # Functionality: checks current_cell neighbors and determine which cell is a hidden cell, which cell is already visited and what cell is a mine
     def process_current_cell(self,i,j):
@@ -188,29 +202,61 @@ class agnt:
 
         if status == 1:
             self.mine_cells.append( [i,j] )
+            self.unvisited_cells.remove( [i,j] )
 
         if status != 1:
             self.visited_cells.append( [i,j] ) # adds current processed cell in list of visited cells if its safe
-            obj.status = 0  # identifies the index as safe by marking it 0
-            obj.clue = self.environment_obj.get_clue(self.array_board , i, j) # assigns number of clues around it
 
-            current_neighbors = self.get_neighbors_current_cell(i,j)    # gets a list of neighbors of current cells
+            self.unvisited_cells.remove([i, j]) # removing index from unvisited cells
 
-            visited = self.get_visited_cells(current_neighbors) # In adjacent cells, returns a value for neighbors that are already visited - Returns just a value not cell indexs that are visited
+            # identifies the index as safe by marking it 0
+            obj.status = 0
+
+            # assigns clue (clue is number of mines in adjacent neighbors
+            obj.clue = self.environment_obj.get_clue(self.array_board , i, j)
+
+            # gets a list of neighbors of current cells
+            current_neighbors = self.get_neighbors_current_cell(i,j)
+
+            # In adjacent cells, returns a value for neighbors that are already visited/revealed - Returns just a value not cell indexs that are visited
+            visited = self.get_visited_cells(current_neighbors)
             obj.safe_n = visited
 
-            hidden = self.get_hidden_cells(current_neighbors) # In adjacent cells, returns a value for neighbors that are hidden/unrevealed cells - Returns just a value not cell indexs that are hidden
+            # In adjacent cells, returns a value for neighbors that are hidden/unrevealed cells - Returns just a value not cell indexs that are hidden
+            hidden = self.get_hidden_cells(current_neighbors)
             obj.cells_still_unexplored_in_neighbors = hidden
 
-            mines = self.get_mines_in_neighbor_cells(current_neighbors) # In adjacent cells, returns a value for neighbors that are flagged or mines - Returns just a value not cell indexs that are flagged or mines
+            # In adjacent cells, returns a value for neighbors that are mines - Returns just a value not cell indexs that are flagged or mines
+            mines = self.get_mines_in_neighbor_cells(current_neighbors)
             obj.appearing_mines_in_neighbors = mines
 
             obj.print_cell_info()
+            #
+            # a = self.mine_estimate(obj.clue, mines, hidden)
+            #
+            # if a == True:
+            #     returning_list = self.flag_cells( current_neighbors )
+            #     return returning_list
+            #
+            # else:
+            #     a = self.safe_estimator(obj.clue, visited, hidden)
+            #     if a == True:
 
-            # Note: make sure to init the cell class for the very first cell and make sure you are not overwriting the same object
-            # you will be using those objects by index e.g iterate a list: when index matches it pulls up all the information for that index
+    def flag_cells(self, current_neighbors):
+        neighbor = self.get_hidden_cells_list(current_neighbors)
+        for i in neighbor:
+            obj = self.get_cur_cell_instance( i )
+            obj.status = 1  # whether or not it is a mine or safe
+            self.mine_cells.append(i)
+        return neighbor
 
-            # Read description and add the code
+    def flag_cells_as_safe(self, current_neighbors):
+        neighbor = self.get_hidden_cells_list(current_neighbors)
+        for i in neighbor:
+            obj = self.get_cur_cell_instance( i )
+            obj.status = 1  # whether or not it is a mine or safe
+            obj.status = 0  # whether or not it is a mine or safe
+        return
 
 
 
