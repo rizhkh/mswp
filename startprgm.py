@@ -46,15 +46,15 @@ class start:
         # canvas_arr_j = j * 20
         status = self.environment_class.get_cell_value(self.board_array,i,j)
         if status != 1:
-            color = (150, 150, 150)
+            #color = (150, 150, 150)
             val = self.environment_class.get_clue(self.board_array,i,j)
             #self.environment_class.rect_clicked( str(val) , color, canvas_arr_i,canvas_arr_j)
-            self.environment_class.color_cell(str(val), color, i, j,0)
+            self.environment_class.color_cell(str(val), i, j,0)
         elif status == 1:   # IF THE CELL IS A MINE
             color = (255, 0, 0)
             self.total_mines += 1
             #self.environment_class.rect_clicked('', color, canvas_arr_i, canvas_arr_j)
-            self.environment_class.color_cell('', color, i, j,1)
+            self.environment_class.color_cell('', i, j,1)
 
     # This function works just once - you click once that is it - the rest is auto movement
     def click_cell(self,obj,i,j):
@@ -70,6 +70,7 @@ class start:
         val = obj.get_clue(self.board_array , index_board_i, index_board_j)
         self.highlight_board(index_board_i,index_board_j)
         returned_list =  self.agent_class.process_current_cell(index_board_i,index_board_j)
+        self.agent_class.traverse_board(returned_list)
         #self.highlight( returned_list )
 
     def start_algorithm(self, obj, choice, flammability_rate):

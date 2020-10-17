@@ -3,6 +3,7 @@ from collections import deque
 import random
 from mswp.boardenvironment import environment
 from mswp.cellInformation import cell
+import time
 
 
 # # note
@@ -28,27 +29,28 @@ from mswp.cellInformation import cell
 
 
 class agnt:
-
-    #all_cells = dict() #np.zeros((0, 0), dtype=int) # this list is total cells on the board
+    # all_cells = dict() #np.zeros((0, 0), dtype=int) # this list is total cells on the board
     all_cells = []  # this list is total cells on the board  # This would store the object of each cell that is visited - we use this list to access all stored information
     visited_cells = []  # just stores index of cells that are visited
-    mine_cells = [] # list of cells that are mines and they have been revealed - not hidden on board anymore
+    mine_cells = []  # list of cells that are mines and they have been revealed - not hidden on board anymore
 
     unvisited_cells = []
+
+    traverse_cells = [] # list of cells that needs to be processed / traversed
 
     environment_obj = None
 
     board_array_agent = np.zeros((0, 0), dtype=int)
-    array_board = np.zeros((0, 0), dtype=int) # array val from startprm
+    array_board = np.zeros((0, 0), dtype=int)  # array val from startprm
 
     box_height = 0
     box_width = 0
     row = 0
     col = 0
 
-    def __init__(self, arr, row_dimension, col_dimenison,bh,bw):
+    def __init__(self, arr, row_dimension, col_dimenison, bh, bw):
         self.array_board = np.copy(arr)
-        #self.all_cells = np.copy(arr)
+        # self.all_cells = np.copy(arr)
         self.row = row_dimension
         self.col = col_dimenison
         self.init_all_cells()
@@ -61,78 +63,77 @@ class agnt:
 
     # this function runs just once in the start and this is to initialize an object and set value of 0 for all unrevealed cells
     def init_all_cells(self):
-        for i in range(0, self.row ):
-            for j in range ( 0 , self.col):
+        for i in range(0, self.row):
+            for j in range(0, self.col):
                 self.unvisited_cells.append([i, j])
-                index = [i,j]
+                index = [i, j]
                 status = 'un-visited'
                 mines_surrounding_it_clue = 0
                 safe_neighbors = 0
                 mines_indentified_around = 0
-                hidden_cells_around = len( self.get_neighbors_current_cell(i, j) )
-                obj = cell( index, status, mines_surrounding_it_clue, safe_neighbors, mines_indentified_around, hidden_cells_around)
-                key = [i,j]
-                self.all_cells.append( [key,obj] )
-
-
+                hidden_cells_around = len(self.get_neighbors_current_cell(i, j))
+                obj = cell(index, status, mines_surrounding_it_clue, safe_neighbors, mines_indentified_around,
+                           hidden_cells_around)
+                key = [i, j]
+                self.all_cells.append([key, obj])
 
     # This function is an example function on how to access object from list - cell objects
     def print_value_cell(self):
-        key = [4,4]
-        for i in range(0, len( self.all_cells ) ):
-            a = self.all_cells[ i ]
-            if a[0] == key :
+        key = [4, 4]
+        for i in range(0, len(self.all_cells)):
+            a = self.all_cells[i]
+            if a[0] == key:
                 obj = a[1]
-                #obj = self.all_cells[i][1].get_current_position()
-                #obj= self.all_cells[ [key,1] ]
-                print( obj.get_current_position() )
+                # obj = self.all_cells[i][1].get_current_position()
+                # obj= self.all_cells[ [key,1] ]
+                print(obj.get_current_position())
                 print("works")
 
     # returns the object instance of the current cell from the list where it is stored - Used in process curr cell to get the object of cell we are processing and update info
     def get_cur_cell_instance(self, key):
-        for i in range(0, len( self.all_cells ) ):
-            a = self.all_cells[ i ]
-            if a[0] == key :
+        for i in range(0, len(self.all_cells)):
+            a = self.all_cells[i]
+            if a[0] == key:
                 obj = a[1]
                 return obj
 
     # Returns list of neighbors of current cell being processed
-    def get_neighbors_current_cell(self,i,j):
+    def get_neighbors_current_cell(self, i, j):
         current_neighbors = []
         # Up direction
-        if ( (i - 1) >= 0 and (i - 1) < self.row) and (j >= 0 and j < self.col):
-            current_neighbors.append([i-1, j])
+        if ((i - 1) >= 0 and (i - 1) < self.row) and (j >= 0 and j < self.col):
+            current_neighbors.append([i - 1, j])
 
         # Down direction
-        if ( (i + 1) >= 0 and (i + 1) < self.row) and (j >= 0 and j < self.col):
+        if ((i + 1) >= 0 and (i + 1) < self.row) and (j >= 0 and j < self.col):
             current_neighbors.append([i + 1, j])
 
         # Left direction
-        if (i>= 0 and i<self.row) and ( (j - 1) >= 0 and (j - 1) < self.col):
+        if (i >= 0 and i < self.row) and ((j - 1) >= 0 and (j - 1) < self.col):
             current_neighbors.append([i, j - 1])
 
         # Right direction
-        if (i>= 0 and i<self.row) and ( (j + 1) >= 0 and (j + 1) < self.col):
+        if (i >= 0 and i < self.row) and ((j + 1) >= 0 and (j + 1) < self.col):
             current_neighbors.append([i, j + 1])
 
         # Top-Left direction
-        if ( (i - 1) >= 0 and (i - 1) < self.row) and ( (j - 1) >= 0 and (j - 1) < self.col):
+        if ((i - 1) >= 0 and (i - 1) < self.row) and ((j - 1) >= 0 and (j - 1) < self.col):
             current_neighbors.append([i - 1, j - 1])
 
         # Top-Right direction
-        if ( (i - 1) >= 0 and (i - 1) < self.row) and ( (j + 1) >= 0 and (j + 1) < self.col):
+        if ((i - 1) >= 0 and (i - 1) < self.row) and ((j + 1) >= 0 and (j + 1) < self.col):
             current_neighbors.append([i - 1, j + 1])
 
         # Bottom-Left direction
-        if ( (i + 1) >= 0 and (i + 1) < self.row) and ( (j - 1) >= 0 and (j - 1) < self.col):
+        if ((i + 1) >= 0 and (i + 1) < self.row) and ((j - 1) >= 0 and (j - 1) < self.col):
             current_neighbors.append([i + 1, j - 1])
 
         # Bottom-Right direction
-        if ( (i + 1) >= 0 and (i + 1) < self.row) and ( (j + 1) >= 0 and (j + 1) < self.col):
+        if ((i + 1) >= 0 and (i + 1) < self.row) and ((j + 1) >= 0 and (j + 1) < self.col):
             current_neighbors.append([i + 1, j + 1])
 
-        #current_neighbors = [ [i-1,j], [i+1, j], [i, j-1], [i, j+1], [i-1, j-1], [i-1, j+1], [i+1, j-1], [i+1, j+1] ]
-        return  current_neighbors
+        # current_neighbors = [ [i-1,j], [i+1, j], [i, j-1], [i, j+1], [i-1, j-1], [i-1, j+1], [i+1, j-1], [i+1, j+1] ]
+        return current_neighbors
 
     # Returns number of visited cells in neighbors of current cell
     def get_visited_cells(self, list):
@@ -155,7 +156,7 @@ class agnt:
         ret_list = []
         for i in list:
             if (i not in self.visited_cells) and (i not in self.mine_cells):
-                ret_list.append( i )
+                ret_list.append(i)
         return ret_list
 
     # Returns number of mine cells as neighbors of current cell
@@ -167,10 +168,11 @@ class agnt:
         return val
 
     def mine_estimate(self, clue, tot_mines, hidden_neighbor_mine):
-        print("ssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss")
-        print(clue , " , " ,(hidden_neighbor_mine + tot_mines))
-        if clue == (hidden_neighbor_mine + tot_mines):
-            print("azzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz")
+        #print(clue, " , ", (hidden_neighbor_mine + tot_mines))
+
+        #if (clue - hidden_neighbor_mine) == (tot_mines):
+        #if (clue-tot_mines) == (hidden_neighbor_mine):
+        if clue == (hidden_neighbor_mine + tot_mines): # use this one
             return True
         return False
         # #number of hidden neighbors = clue - total revealed mines
@@ -178,11 +180,15 @@ class agnt:
         #     return 0
         # return hidden_neighbor_mine
 
-
     def safe_estimator(self, clue, tot_rev_neighbors, hidden_neighbor_mine):
-        if (8-clue) == (hidden_neighbor_mine + tot_rev_neighbors):
+
+        #if ((8 - clue) - tot_rev_neighbors) == (hidden_neighbor_mine):
+
+        if (8 - clue) == (hidden_neighbor_mine + tot_rev_neighbors):   # use this one
             return True
         return False
+
+
         # tot_safe_neighbor = 8 -clue
         # hidden_neighbor_safe = tot_safe_neighbor - tot_rev_neighbors
         # #number of hidden neighbors = total number of safe neighbors (8 - clue) - total revealed neighbors
@@ -191,11 +197,11 @@ class agnt:
         # return hidden_neighbor_safe
 
     # Functionality: checks current_cell neighbors and determine which cell is a hidden cell, which cell is already visited and what cell is a mine
-    def process_current_cell(self,i,j):
+    def process_current_cell(self, i, j):
         print("-----")
         print(self.array_board)
-        status = self.environment_obj.get_cell_value( self.array_board, i, j)
-        obj = self.get_cur_cell_instance( [i,j] )
+        status = self.environment_obj.get_cell_value(self.array_board, i, j)
+        obj = self.get_cur_cell_instance([i, j])
         # obj.current_position    # index in 2d array or matrix
         # obj.status  # whether or not it is a mine or safe
         # obj.clue    # if safe, the number of mines surrounding it indicated by the clue
@@ -204,22 +210,25 @@ class agnt:
         # obj.cells_still_unexplored_in_neighbors # number of unexplored neighbors around it
 
         if status == 1:
-            self.mine_cells.append( [i,j] )
-            self.unvisited_cells.remove( [i,j] )
+            self.environment_obj.color_cell("", i, j, 1)  # This code marks the cell on GUI board
+            self.mine_cells.append([i, j])
+            if [i, j] in self.unvisited_cells:
+                self.unvisited_cells.remove([i, j])
 
         if status != 1:
-            self.visited_cells.append( [i,j] ) # adds current processed cell in list of visited cells if its safe
+            self.visited_cells.append([i, j])  # adds current processed cell in list of visited cells if its safe
 
-            self.unvisited_cells.remove([i, j]) # removing index from unvisited cells
+            self.unvisited_cells.remove([i, j])  # removing index from unvisited cells
 
             # identifies the index as safe by marking it 0
             obj.status = 0
 
             # assigns clue (clue is number of mines in adjacent neighbors
-            obj.clue = self.environment_obj.get_clue(self.array_board , i, j)
+            obj.clue = self.environment_obj.get_clue(self.array_board, i, j)
+            self.environment_obj.color_cell(str(obj.clue), i, j, 0) # This code marks the cell on GUI board
 
             # gets a list of neighbors of current cells
-            current_neighbors = self.get_neighbors_current_cell(i,j)
+            current_neighbors = self.get_neighbors_current_cell(i, j)
 
             # In adjacent cells, returns a value for neighbors that are already visited/revealed - Returns just a value not cell indexs that are visited
             visited = self.get_visited_cells(current_neighbors)
@@ -237,37 +246,79 @@ class agnt:
 
             a = self.mine_estimate(obj.clue, mines, hidden)
 
+            print("got out of mine_estimator")
+
             if a == True:
-                print("ssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss")
+                print("asdf")
                 self.flag_cells(current_neighbors)
-                #returning_list = self.flag_cells( current_neighbors )
-                #return returning_list
-            #
-            # else:
-            #     a = self.safe_estimator(obj.clue, visited, hidden)
-            #     if a == True:
+                # returning_list = self.flag_cells( current_neighbors )
+                # return returning_list
+
+            else:
+                print("1234567890         ")
+                a = self.safe_estimator(obj.clue, visited, hidden)
+                #if a == True:
+                ret_list = self.flag_cells_as_safe(current_neighbors)
+                return ret_list
+
+        return []
+
 
     def flag_cells(self, current_neighbors):
         neighbor = self.get_hidden_cells_list(current_neighbors)
         for i in neighbor:
-            obj = self.get_cur_cell_instance( i )
+            obj = self.get_cur_cell_instance(i)
             obj.status = 1  # whether or not it is a mine or safe
             self.mine_cells.append(i)
+            self.unvisited_cells.remove( i )
+            if i in self.traverse_cells:
+                self.traverse_cells.remove( i )
+
             color = (255, 255, 255)
             index_i = i[0]
             index_j = i[1]
-            self.environment_obj.color_cell('', color, index_i, index_j,'flag')
+            self.environment_obj.color_cell('', index_i, index_j, 'flag')
         return neighbor
 
     def flag_cells_as_safe(self, current_neighbors):
         neighbor = self.get_hidden_cells_list(current_neighbors)
         for i in neighbor:
-            obj = self.get_cur_cell_instance( i )
+            obj = self.get_cur_cell_instance(i)
             obj.status = 1  # whether or not it is a mine or safe
             obj.status = 0  # whether or not it is a mine or safe
         return neighbor
 
+    # Functionality: this function will move agent. If mine and safe neighbors does not satisfy then the next node will be taken from the
+    # queue and so on
+    # BUT
+    # if mine - safe works then - the agen will traverse the hidden neighbors and then select one of the unexplored neighbors
+    # but we wont have to worry about that because when we are traversing unrevelaed cells in neighbors each neighbor will be
+    # dealt as a separate cell - main cell - that is prcoessed
+    def traverse_board(self, list_cells):
+        print("About to start traverse_board")
+        # this will make sure all cells from the board are either flagged, or marked safe or as mine
+        while self.unvisited_cells:
+            print(self.traverse_cells)
+            time.sleep(0.2)
+            self.cell_traverse_list(list_cells)
+            if self.traverse_cells:
+                index = self.traverse_cells.pop(0)
+                index_board_i = index[0]
+                index_board_j = index[1]
+                list_cells = self.process_current_cell(index_board_i, index_board_j)
+            else:
+                self.traverse_cells.append( self.unvisited_cells.pop() )
 
+
+        if not self.unvisited_cells:
+            print("EXITING $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$")
+
+    # This funcadds new list safe neighbors that needs to be explored to an already existing list with cells
+    def cell_traverse_list(self,list_cells):
+        if len(list_cells) > 0:
+            for i in list_cells:
+                if i not in self.traverse_cells:
+                    self.traverse_cells.append(i)
 
     # Now add a func that stores all information of that cell - and in the next move if that cell is a neighbor
     # you can use that information

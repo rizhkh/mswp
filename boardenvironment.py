@@ -12,7 +12,7 @@ class environment:
 
     row = 10
     col = 10
-    total_mines = 10
+    total_mines = 20
     mines = total_mines
 
 
@@ -103,12 +103,30 @@ class environment:
     # Note: Keep track of each location where the mine is placed
     #Functionality: This randomly adds mines on the board
     def add_mines_randomly(self, arr):
-        for i in range(0, len(arr) ):
-            for j in range(i, len(arr) ):
-                rnum = random.randint(0, 3)
-                if rnum==0 and self.mines!=0:
-                    arr[i][j] = 1
-                    self.mines =- 1
+
+        i = 0
+        j = 0
+
+        #while i < len(arr):
+        while self.mines > 0 :
+            if j == len(arr):
+                i += 1
+                j = 0
+            if i == len(arr):
+                i=0
+
+            rnum = random.randint(0, 3)
+            if rnum == 0 and self.mines != 0:
+                arr[i][j] = 1
+                self.mines -= 1
+            j += 1
+
+        # for i in range(0, len(arr) ):
+        #     for j in range(i, len(arr) ):
+        #         rnum = random.randint(0, 3)
+        #         if rnum==0 and self.mines!=0:
+        #             arr[i][j] = 1
+        #             self.mines =- 1
 
         return arr
 
@@ -132,26 +150,26 @@ class environment:
         #self.board_array = np.full((self.row, self.col),int(0))
         self.draw_cells_map( arr,self.screen , (187,187,187)) # Draws out the GUI from the stored array values
 
-    def color_cell(self, message,color, row_x , col_y, status):
+    def color_cell(self, message,row_x , col_y, status):
         row_x = row_x * 20
         col_y = col_y * 20
 
         if status == 0:
             #Note: Make sure to add the other 2d array values here to store the value - currently this only has the canvas gui aspect functionality to it
-            Grid_box_Object = pygame.draw.rect(self.screen, color, [col_y, row_x, self.box_width, self.box_height])   # row_x=row and col_y=col is the position where the box will be displayed
+            Grid_box_Object = pygame.draw.rect(self.screen, (150, 150, 150), [col_y, row_x, self.box_width, self.box_height])   # row_x=row and col_y=col is the position where the box will be displayed
             text = self.font.render(message, True, (255, 255, 255))
             self.screen.blit(text, Grid_box_Object.midtop)
             pygame.display.flip()
         if status == 'flag':
             img = pygame.image.load('flag.png').convert()
             img = pygame.transform.scale(img, (18, 18))
-            Grid_box_Object = pygame.draw.rect(self.screen, color, [col_y, row_x, self.box_width, self.box_height])   # row_x=row and col_y=col is the position where the box will be displayed
+            Grid_box_Object = pygame.draw.rect(self.screen, (255, 0, 0), [col_y, row_x, self.box_width, self.box_height])   # row_x=row and col_y=col is the position where the box will be displayed
             self.screen.blit(img, Grid_box_Object)#, Grid_box_Object.midtop)
             pygame.display.flip()
         if status == 1:
             img = pygame.image.load('mine.png').convert()
             img = pygame.transform.scale(img, (18, 18))
-            Grid_box_Object = pygame.draw.rect(self.screen, color, [col_y, row_x, self.box_width, self.box_height])   # row_x=row and col_y=col is the position where the box will be displayed
+            Grid_box_Object = pygame.draw.rect(self.screen, (255, 0, 0), [col_y, row_x, self.box_width, self.box_height])   # row_x=row and col_y=col is the position where the box will be displayed
             self.screen.blit(img, Grid_box_Object)#, Grid_box_Object.midtop)
             pygame.display.flip()
 
