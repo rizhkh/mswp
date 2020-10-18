@@ -323,10 +323,7 @@ class agnt:
 
     # This checks that there are no duplicates in the knowledge base for the equations that are formed
     def check_duplicate(self, var_list, eq_length): # var_list will have [ var1_var2_var3 ]
-
-        # Note: For future reference: if you are seeing problem, try the update duplicate feature
-        # check_duplicate(self, var_list, eq_length, CLUE)
-        # if a duplicate is found, remove the duplicate or update it with new clue
+        # note: eq_length is the length of the list format e.g ['A'] - length 1, [A,B] - length 2 and so on
 
         if len(var_list) == 1:
             var_1 = var_list[0]
@@ -353,9 +350,6 @@ class agnt:
         # if one var eq_length = 1
         # if two var eq_length = 2
         # if three var eq_length = 3
-
-
-
         if eq_length == 1:
             if ( [var_1, 0] in self.knowledge_base) :
                 return False
@@ -448,6 +442,126 @@ class agnt:
             #     return True
         return True
 
+    # helper function for update_duplicate to update duplicate vars
+    def duplicate_funct(self, var,clue, length):
+        if length==1:
+            self.knowledge_base.remove(var)
+            var[1] = clue
+            self.knowledge_base.append(var)
+
+        if length==2:
+            self.knowledge_base.remove(var)
+            var[2] = clue
+            self.knowledge_base.append(var)
+
+        if length==3:
+            self.knowledge_base.remove(var)
+            var[3] = clue
+            self.knowledge_base.append(var)
+        return True
+
+    # This cupdates already existing vars and eqs in the knowledge base
+    def update_duplicate(self, var_list, eq_length, new_clue): # var_list will have [ var1_var2_var3 ]
+        if len(var_list) == 1:
+            var_1 = var_list[0]
+
+        if len(var_list) == 2:
+            var_1 = var_list[0]
+            var_2 = var_list[1]
+
+
+        if len(var_list) == 3:
+            var_1 = var_list[0]
+            var_2 = var_list[1]
+            var_3 = var_list[2]
+
+        if eq_length == 1:
+            if ( [var_1, 0] in self.knowledge_base) :
+                self.duplicate_funct([var_1, 0],new_clue, 1)
+
+            if ( [var_1, 1] in self.knowledge_base) :
+                self.duplicate_funct([var_1, 1], new_clue, 1)
+
+            if ( [var_1, 2] in self.knowledge_base) :
+                self.duplicate_funct([var_1, 2], new_clue, 1)
+
+
+            if ( [var_1, 3] in self.knowledge_base) :
+                self.duplicate_funct([var_1, 3], new_clue, 1)
+
+            if ( [var_1, 4] in self.knowledge_base) :
+                self.duplicate_funct([var_1, 4], new_clue, 1)
+
+            if ( [var_1, 5] in self.knowledge_base) :
+                self.duplicate_funct([var_1, 5], new_clue, 1)
+
+            if ( [var_1, 6] in self.knowledge_base) :
+                self.duplicate_funct([var_1, 6], new_clue, 1)
+
+            if ( [var_1, 7] in self.knowledge_base) :
+                self.duplicate_funct([var_1, 7], new_clue, 1)
+
+            if ( [var_1, 8] in self.knowledge_base) :
+                self.duplicate_funct([var_1, 8], new_clue, 1)
+
+
+        if eq_length == 2:
+            if ( [var_1, var_2, 0] in self.knowledge_base) :
+                self.duplicate_funct( [var_1, var_2, 0], new_clue, 2)
+
+            if ( [var_1, var_2, 1] in self.knowledge_base) :
+                self.duplicate_funct( [var_1, var_2, 1], new_clue, 2)
+
+            if ( [var_1, var_2, 2] in self.knowledge_base) :
+                self.duplicate_funct( [var_1, var_2, 2], new_clue, 2)
+
+            if ( [var_1, var_2, 3] in self.knowledge_base) :
+                self.duplicate_funct( [var_1, var_2, 3], new_clue, 2)
+
+            if ( [var_1, var_2, 4] in self.knowledge_base) :
+                self.duplicate_funct( [var_1, var_2, 4], new_clue, 2)
+
+            if ( [var_1, var_2, 5] in self.knowledge_base) :
+                self.duplicate_funct( [var_1, var_2, 5], new_clue, 2)
+
+            if ( [var_1, var_2, 5] in self.knowledge_base) :
+                self.duplicate_funct( [var_1, var_2, 6], new_clue, 2)
+
+            if ( [var_1, var_2, 5] in self.knowledge_base) :
+                self.duplicate_funct( [var_1, var_2, 7], new_clue, 2)
+
+            if ( [var_1, var_2, 8] in self.knowledge_base) :
+                self.duplicate_funct( [var_1, var_2, 8], new_clue, 2)
+
+
+        if eq_length == 3:
+            if ( [var_1, var_2, var_3, 0] in self.knowledge_base) :
+                self.duplicate_funct( [var_1, var_2, var_3, 0], new_clue, 3)
+
+            if ( [var_1, var_2, var_3, 1] in self.knowledge_base) :
+                self.duplicate_funct( [var_1, var_2, var_3, 1], new_clue, 3)
+
+            if ( [var_1, var_2, var_3, 2] in self.knowledge_base) :
+                self.duplicate_funct([var_1, var_2, var_3, 2], new_clue, 3)
+
+            if ( [var_1, var_2, var_3, 3] in self.knowledge_base) :
+                self.duplicate_funct([var_1, var_2, var_3, 3], new_clue, 3)
+
+            if ( [var_1, var_2, var_3, 4]in self.knowledge_base) :
+                self.duplicate_funct([var_1, var_2, var_3, 4], new_clue, 3)
+
+            if ( [var_1, var_2, var_3, 5] in self.knowledge_base) :
+                self.duplicate_funct([var_1, var_2, var_3, 5], new_clue, 3)
+
+            if ( [var_1, var_2, var_3, 6] in self.knowledge_base) :
+                self.duplicate_funct([var_1, var_2, var_3, 6], new_clue, 3)
+
+            if ( [var_1, var_2, var_3, 7] in self.knowledge_base) :
+                self.duplicate_funct([var_1, var_2, var_3, 7], new_clue, 3)
+
+            if ( [var_1, var_2, var_3, 8] in self.knowledge_base) :
+                self.duplicate_funct([var_1, var_2, var_3, 8], new_clue, 3)
+        return True
 
     # Functionality: takes in a list from current_cell that has to be determine and creates equation of the form a+b+c=clue, a = clue etc in the knowledge base
     def form_equation(self, list, clue, current_cell):
@@ -467,8 +581,12 @@ class agnt:
                 list.remove(index)
             #if [ index , clue] not in self.knowledge_base:  # checks if neighbor list does not exist in knowledge base
             status = self.check_duplicate( [ index ], 1)
+            # if status is false call the update value method
             if status:
                 self.knowledge_base.append([index, clue])
+            else:
+                self.update_duplicate(index , 1, clue)
+
             # if ( [index, 0] not in self.knowledge_base ) and \
             #         ([index, 1] not in self.knowledge_base) and \
             #         ([index, 2] not in self.knowledge_base) and\
@@ -498,6 +616,8 @@ class agnt:
         bottom = [ i + 1, j ]
         bottom_right = [ i + 1, j + 1 ]
 
+
+
         # Top row
         if ( top_left in list ) and ( top in list ):   # a + b
             equation = [top_left, top, clue]
@@ -505,6 +625,9 @@ class agnt:
                 status = self.check_duplicate( [top_left, top], 2)
                 if status:
                     self.knowledge_base.append(equation)
+                else:
+                    self.update_duplicate([top_left, top], 2, clue)
+
                 #self.knowledge_base.append(equation)
                 #self.knowledge_base.append('top row a + b')
 
@@ -515,6 +638,8 @@ class agnt:
                     status = self.check_duplicate([top, top_right], 2)
                     if status:
                         self.knowledge_base.append(equation)
+                    else:
+                        self.update_duplicate([top, top_right], 2, clue)
                 #self.knowledge_base.append(equation)
                 #self.knowledge_base.append('top row b + c')
 
@@ -524,8 +649,14 @@ class agnt:
                 status = self.check_duplicate([top_left, top, top_right], 3)
                 if status:
                     self.knowledge_base.append(equation)
+                else:
+                    self.update_duplicate([top_left, top, top_right], 3, clue)
+
                 #self.knowledge_base.append(equation)
                 #self.knowledge_base.append('top row # a + b + c')
+
+
+
 
         # bottom row
         if ( bottom_left in list ) and ( bottom in list ):   # a + b
@@ -534,6 +665,9 @@ class agnt:
                 status = self.check_duplicate([bottom_left, bottom], 2)
                 if status:
                     self.knowledge_base.append(equation)
+                else:
+                    self.update_duplicate([bottom_left, bottom], 2, clue)
+
                 #self.knowledge_base.append(equation)
                 #self.knowledge_base.append('bottom row # a + b')
 
@@ -543,6 +677,9 @@ class agnt:
                 status = self.check_duplicate([bottom, bottom_right], 2)
                 if status:
                     self.knowledge_base.append(equation)
+                else:
+                    self.update_duplicate([bottom, bottom_right], 2, clue)
+
                 #self.knowledge_base.append(equation)
                 #self.knowledge_base.append('bottom row # b + c')
 
@@ -552,8 +689,12 @@ class agnt:
                 status = self.check_duplicate([bottom_left, bottom, bottom_right], 3)
                 if status:
                     self.knowledge_base.append(equation)
+                else:
+                    self.update_duplicate([bottom_left, bottom, bottom_right], 3, clue)
                 #self.knowledge_base.append(equation)
                 #self.knowledge_base.append('bottom row # a + b + c')
+
+
 
         # left col
         if ( top_left in list ) and ( mid_left in list ):   # a + d
@@ -562,6 +703,9 @@ class agnt:
                 status = self.check_duplicate([top_left, mid_left], 2)
                 if status:
                     self.knowledge_base.append(equation)
+                else:
+                    self.update_duplicate([top_left, mid_left], 2, clue)
+
                 #self.knowledge_base.append(equation)
                 #self.knowledge_base.append('left col # a + d')
 
@@ -571,6 +715,8 @@ class agnt:
                 status = self.check_duplicate([mid_left, bottom_left], 2)
                 if status:
                     self.knowledge_base.append(equation)
+                else:
+                    self.update_duplicate([mid_left, bottom_left], 2, clue)
                 #self.knowledge_base.append(equation)
                 #self.knowledge_base.append('left col # d + g')
 
@@ -580,6 +726,8 @@ class agnt:
                 status = self.check_duplicate([top_left, mid_left, bottom_left], 3)
                 if status:
                     self.knowledge_base.append(equation)
+                else:
+                    self.update_duplicate([top_left, mid_left, bottom_left], 3, clue)
                 #self.knowledge_base.append(equation)
                 #self.knowledge_base.append('left col # a + d + g')
 
@@ -590,6 +738,8 @@ class agnt:
                 status = self.check_duplicate([top_right, mid_right], 2)
                 if status:
                     self.knowledge_base.append(equation)
+                else:
+                    self.update_duplicate([top_right, mid_right], 2, clue)
                 #self.knowledge_base.append(equation)
                 #self.knowledge_base.append('right col # c + f')
 
@@ -599,6 +749,8 @@ class agnt:
                 status = self.check_duplicate([mid_right, bottom_right], 2)
                 if status:
                     self.knowledge_base.append(equation)
+                else:
+                    self.update_duplicate([mid_right, bottom_right], 2, clue)
                 #self.knowledge_base.append(equation)
                 #self.knowledge_base.append('right col # f + i')
 
@@ -608,6 +760,8 @@ class agnt:
                 status = self.check_duplicate([top_right, mid_right, bottom_right], 3)
                 if status:
                     self.knowledge_base.append(equation)
+                else:
+                    self.update_duplicate([top_right, mid_right, bottom_right], 3, clue)
                 #self.knowledge_base.append(equation)
                 #self.knowledge_base.append('right col # c + f + i')
 
