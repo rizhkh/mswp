@@ -70,7 +70,24 @@ class start:
         val = obj.get_clue(self.board_array , index_board_i, index_board_j)
         self.highlight_board(index_board_i,index_board_j)
         returned_list =  self.agent_class.process_current_cell(index_board_i,index_board_j)
-        self.agent_class.traverse_board(returned_list)
+
+        #print(returned_list)
+
+        # Note: MAKE SURE TO CHECK IF THE NEIGHBOR LIST HAS ANY CELL THAT HAS BEEN REVEALED OR MARKED AS A MINE/FLAGGED
+
+
+        list = returned_list
+        self.agent_class.form_equation(list, val, [index_board_i,index_board_j])
+
+        #
+        # list = [[0, 1], [2, 1], [1, 0], [1, 2], [0, 0], [0, 2], [2, 0], [2, 2]]
+        # self.agent_class.form_equation(list, 1, [1,1])
+
+        # list = [[0, 1] , [1,0] , [1,1]]
+        # self.agent_class.form_equation(list, 1, [0,0])
+
+        #self.agent_class.traverse_board(returned_list)
+
         #self.highlight( returned_list )
 
     def start_algorithm(self, obj, choice, flammability_rate):
