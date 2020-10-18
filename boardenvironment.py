@@ -12,7 +12,7 @@ class environment:
 
     row = 10
     col = 10
-    total_mines = 10
+    total_mines = 0
     mines = total_mines
 
 

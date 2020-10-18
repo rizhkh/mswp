@@ -43,6 +43,8 @@ class agnt:
     # [Var,Value] -> Var = Value
     # to look up just a var make sure to look up by len ==2
 
+    kb = dict()
+
     # to look up just a var in equation make sure to look up by len > 2
     # then look inside the list list as these are nested lists
     # [Var,Var,Value] - > Var + Var = Val
@@ -319,6 +321,134 @@ class agnt:
     # you need to have a function that returns list of current neighbors in descending order so first it determines safe/mine on that
     # if not determinable then move to the next one and so on
 
+    # This checks that there are no duplicates in the knowledge base for the equations that are formed
+    def check_duplicate(self, var_list, eq_length): # var_list will have [ var1_var2_var3 ]
+
+        # Note: For future reference: if you are seeing problem, try the update duplicate feature
+        # check_duplicate(self, var_list, eq_length, CLUE)
+        # if a duplicate is found, remove the duplicate or update it with new clue
+
+        if len(var_list) == 1:
+            var_1 = var_list[0]
+            # print("bbbbbbbbb", var_list)
+            # print(var_1)
+
+        if len(var_list) == 2:
+            var_1 = var_list[0]
+            var_2 = var_list[1]
+            # print("bbbbbbbbb", var_list)
+            # print(var_1)
+            # print(var_2)
+
+        if len(var_list) == 3:
+            var_1 = var_list[0]
+            var_2 = var_list[1]
+            var_3 = var_list[2]
+            # print("bbbbbbbbb", var_list)
+            # print(var_1)
+            # print(var_2)
+            # print(var_3)
+
+
+        # if one var eq_length = 1
+        # if two var eq_length = 2
+        # if three var eq_length = 3
+
+
+
+        if eq_length == 1:
+            if ( [var_1, 0] in self.knowledge_base) :
+                return False
+            if ( [var_1, 1] in self.knowledge_base) :
+                return False
+            if ( [var_1, 2] in self.knowledge_base) :
+                return False
+            if ( [var_1, 3] in self.knowledge_base) :
+                return False
+            if ( [var_1, 4] in self.knowledge_base) :
+                return False
+            if ( [var_1, 5] in self.knowledge_base) :
+                return False
+            if ( [var_1, 6] in self.knowledge_base) :
+                return False
+            if ( [var_1, 7] in self.knowledge_base) :
+                return False
+            if ( [var_1, 8] in self.knowledge_base) :
+                return False
+            # if ([var_1, 0] not in self.knowledge_base) and \
+            #         ([var_1, 1] not in self.knowledge_base) and \
+            #         ([var_1, 2] not in self.knowledge_base) and \
+            #         ([var_1, 3] not in self.knowledge_base) and \
+            #         ([var_1, 4] not in self.knowledge_base) and \
+            #         ([var_1, 5] not in self.knowledge_base) and \
+            #         ([var_1, 6] not in self.knowledge_base) and \
+            #         ([var_1, 7] not in self.knowledge_base) and \
+            #         ([var_1, 8] not in self.knowledge_base):
+            #     return True
+
+        if eq_length == 2:
+            if ( [var_1, var_2, 0] in self.knowledge_base) :
+                return False
+            if ( [var_1, var_2, 1] in self.knowledge_base) :
+                return False
+            if ( [var_1, var_2, 2] in self.knowledge_base) :
+                return False
+            if ( [var_1, var_2, 3] in self.knowledge_base) :
+                return False
+            if ( [var_1, var_2, 4] in self.knowledge_base) :
+                return False
+            if ( [var_1, var_2, 5] in self.knowledge_base) :
+                return False
+            if ( [var_1, var_2, 5] in self.knowledge_base) :
+                return False
+            if ( [var_1, var_2, 5] in self.knowledge_base) :
+                return False
+            if ( [var_1, var_2, 8] in self.knowledge_base) :
+                return False
+            # if ([var_1, var_2, 0] not in self.knowledge_base) and \
+            #         ( [var_1, var_2, 1] not in self.knowledge_base) and \
+            #         ( [var_1, var_2, 2] not in self.knowledge_base) and \
+            #         ( [var_1, var_2, 3] not in self.knowledge_base) and \
+            #         ( [var_1, var_2, 4] not in self.knowledge_base) and \
+            #         ( [var_1, var_2, 5] not in self.knowledge_base) and \
+            #         ( [var_1, var_2, 6] not in self.knowledge_base) and \
+            #         ( [var_1, var_2, 7] not in self.knowledge_base) and \
+            #         ( [var_1, var_2, 8] not in self.knowledge_base):
+            #     return True
+
+        if eq_length == 3:
+            if ( [var_1, var_2, var_3, 0] in self.knowledge_base) :
+                return False
+            if ( [var_1, var_2, var_3, 1] in self.knowledge_base) :
+                return False
+            if ( [var_1, var_2, var_3, 2] in self.knowledge_base) :
+                return False
+            if ( [var_1, var_2, var_3, 3] in self.knowledge_base) :
+                return False
+            if ( [var_1, var_2, var_3, 4]in self.knowledge_base) :
+                return False
+            if ( [var_1, var_2, var_3, 5] in self.knowledge_base) :
+                return False
+            if ( [var_1, var_2, var_3, 6] in self.knowledge_base) :
+                return False
+            if ( [var_1, var_2, var_3, 7] in self.knowledge_base) :
+                return False
+            if ( [var_1, var_2, var_3, 8] in self.knowledge_base) :
+                return False
+
+            # if ([var_1, var_2, 0] not in self.knowledge_base) and \
+            #         ( [var_1, var_2, var_3, 1] not in self.knowledge_base) and \
+            #         ( [var_1, var_2, var_3, 2] not in self.knowledge_base) and \
+            #         ( [var_1, var_2, var_3, 3] not in self.knowledge_base) and \
+            #         ( [var_1, var_2, var_3, 4] not in self.knowledge_base) and \
+            #         ( [var_1, var_2, var_3, 5] not in self.knowledge_base) and \
+            #         ( [var_1, var_2, var_3, 6] not in self.knowledge_base) and \
+            #         ( [var_1, var_2, var_3, 7] not in self.knowledge_base) and \
+            #         ( [var_1, var_2, var_3, 8] not in self.knowledge_base):
+            #     return True
+        return True
+
+
     # Functionality: takes in a list from current_cell that has to be determine and creates equation of the form a+b+c=clue, a = clue etc in the knowledge base
     def form_equation(self, list, clue, current_cell):
         # current_cell position is being passed to make equations
@@ -331,20 +461,24 @@ class agnt:
         cur_cell_j = current_cell[1]
 
         #adds single index with clue e.g a = val , b = val etc
+        print("aaaaaaaaaaaaaaaaaa", list)
         for index in list:
             if index in self.visited_cells: # checks if any neighbor is already visited - if it has been revealed then we remove it from the list before processing it
                 list.remove(index)
             #if [ index , clue] not in self.knowledge_base:  # checks if neighbor list does not exist in knowledge base
-            if ( [index, 0] not in self.knowledge_base ) and \
-                    ([index, 1] not in self.knowledge_base) and \
-                    ([index, 2] not in self.knowledge_base) and\
-                    ([index, 3] not in self.knowledge_base) and \
-                    ([index, 4] not in self.knowledge_base) and \
-                    ([index, 5] not in self.knowledge_base) and \
-                    ([index, 6] not in self.knowledge_base) and \
-                    ([index, 7] not in self.knowledge_base) and \
-                    ([index, 8] not in self.knowledge_base):
-                self.knowledge_base.append( [ index , clue] )
+            status = self.check_duplicate( [ index ], 1)
+            if status:
+                self.knowledge_base.append([index, clue])
+            # if ( [index, 0] not in self.knowledge_base ) and \
+            #         ([index, 1] not in self.knowledge_base) and \
+            #         ([index, 2] not in self.knowledge_base) and\
+            #         ([index, 3] not in self.knowledge_base) and \
+            #         ([index, 4] not in self.knowledge_base) and \
+            #         ([index, 5] not in self.knowledge_base) and \
+            #         ([index, 6] not in self.knowledge_base) and \
+            #         ([index, 7] not in self.knowledge_base) and \
+            #         ([index, 8] not in self.knowledge_base):
+            #     self.knowledge_base.append( [ index , clue] )
 
         i = current_cell[0]
         j = current_cell[1]
@@ -368,83 +502,119 @@ class agnt:
         if ( top_left in list ) and ( top in list ):   # a + b
             equation = [top_left, top, clue]
             if equation not in self.knowledge_base:
-                self.knowledge_base.append(equation)
+                status = self.check_duplicate( [top_left, top], 2)
+                if status:
+                    self.knowledge_base.append(equation)
+                #self.knowledge_base.append(equation)
                 #self.knowledge_base.append('top row a + b')
 
         if ( top in list ) and ( top_right in list ):   # b + c
             equation = [top, top_right, clue]
             if equation not in self.knowledge_base:
-                self.knowledge_base.append(equation)
+                if equation not in self.knowledge_base:
+                    status = self.check_duplicate([top, top_right], 2)
+                    if status:
+                        self.knowledge_base.append(equation)
+                #self.knowledge_base.append(equation)
                 #self.knowledge_base.append('top row b + c')
 
         if ( top_left in list ) and ( top in list ) and ( top_right in list ):   # a + b + c
             equation = [ top_left , top, top_right, clue]
             if equation not in self.knowledge_base:
-                self.knowledge_base.append(equation)
+                status = self.check_duplicate([top_left, top, top_right], 3)
+                if status:
+                    self.knowledge_base.append(equation)
+                #self.knowledge_base.append(equation)
                 #self.knowledge_base.append('top row # a + b + c')
 
         # bottom row
         if ( bottom_left in list ) and ( bottom in list ):   # a + b
             equation = [ bottom_left, bottom, clue]
             if equation not in self.knowledge_base:
-                self.knowledge_base.append(equation)
+                status = self.check_duplicate([bottom_left, bottom], 2)
+                if status:
+                    self.knowledge_base.append(equation)
+                #self.knowledge_base.append(equation)
                 #self.knowledge_base.append('bottom row # a + b')
 
         if ( bottom in list ) and ( bottom_right in list ):   # b + c
             equation = [ bottom, bottom_right, clue]
             if equation not in self.knowledge_base:
-                self.knowledge_base.append(equation)
+                status = self.check_duplicate([bottom, bottom_right], 2)
+                if status:
+                    self.knowledge_base.append(equation)
+                #self.knowledge_base.append(equation)
                 #self.knowledge_base.append('bottom row # b + c')
 
         if ( bottom_left in list ) and ( bottom in list ) and ( bottom_right in list ):   # a + b + c
             equation = [ bottom_left , bottom, bottom_right, clue]
             if equation not in self.knowledge_base:
-                self.knowledge_base.append(equation)
+                status = self.check_duplicate([bottom_left, bottom, bottom_right], 3)
+                if status:
+                    self.knowledge_base.append(equation)
+                #self.knowledge_base.append(equation)
                 #self.knowledge_base.append('bottom row # a + b + c')
 
         # left col
         if ( top_left in list ) and ( mid_left in list ):   # a + d
             equation = [ top_left, mid_left, clue]
             if equation not in self.knowledge_base:
-                self.knowledge_base.append(equation)
+                status = self.check_duplicate([top_left, mid_left], 2)
+                if status:
+                    self.knowledge_base.append(equation)
+                #self.knowledge_base.append(equation)
                 #self.knowledge_base.append('left col # a + d')
 
         if ( mid_left in list ) and ( bottom_left in list ):   # d + g
             equation = [ mid_left, bottom_left, clue]
             if equation not in self.knowledge_base:
-                self.knowledge_base.append(equation)
+                status = self.check_duplicate([mid_left, bottom_left], 2)
+                if status:
+                    self.knowledge_base.append(equation)
+                #self.knowledge_base.append(equation)
                 #self.knowledge_base.append('left col # d + g')
 
         if ( top_left in list ) and ( mid_left in list ) and ( bottom_left in list ):   # a + d + g
             equation = [ top_left, mid_left, bottom_left, clue]
             if equation not in self.knowledge_base:
-                self.knowledge_base.append(equation)
+                status = self.check_duplicate([top_left, mid_left, bottom_left], 3)
+                if status:
+                    self.knowledge_base.append(equation)
+                #self.knowledge_base.append(equation)
                 #self.knowledge_base.append('left col # a + d + g')
 
         # right row
         if ( top_right in list ) and ( mid_right in list ):   # c + f
             equation = [ top_right, mid_right, clue]
             if equation not in self.knowledge_base:
-                self.knowledge_base.append(equation)
+                status = self.check_duplicate([top_right, mid_right], 2)
+                if status:
+                    self.knowledge_base.append(equation)
+                #self.knowledge_base.append(equation)
                 #self.knowledge_base.append('right col # c + f')
 
         if ( mid_right in list ) and ( bottom_right in list ):   # f + i
             equation = [ mid_right, bottom_right, clue]
             if equation not in self.knowledge_base:
-                self.knowledge_base.append(equation)
+                status = self.check_duplicate([mid_right, bottom_right], 2)
+                if status:
+                    self.knowledge_base.append(equation)
+                #self.knowledge_base.append(equation)
                 #self.knowledge_base.append('right col # f + i')
 
         if ( top_right in list ) and ( mid_right in list ) and ( bottom_right in list ):   # c + f + i
             equation = [ top_right, mid_right, bottom_right, clue]
             if equation not in self.knowledge_base:
-                self.knowledge_base.append(equation)
+                status = self.check_duplicate([top_right, mid_right, bottom_right], 3)
+                if status:
+                    self.knowledge_base.append(equation)
+                #self.knowledge_base.append(equation)
                 #self.knowledge_base.append('right col # c + f + i')
 
         for i in self.knowledge_base:
             print(i)
 
         print('----')
-
 
     # Functionality: When a cell has been revealed - go through knowledge base and delete the var from equations
     def delete_var(self, list, clue, delete_cell):
