@@ -1,5 +1,5 @@
 import numpy as np
-from collections import deque
+import collections
 import random
 from mswp.boardenvironment import environment
 from mswp.cellInformation import cell
@@ -243,6 +243,10 @@ class agnt:
             else:
                 a = self.safe_estimator(obj.clue, visited, hidden)
                 ret_list = self.flag_cells_as_safe(current_neighbors)
+
+                cell_to_delete = [i, j]
+                self.delete_var(cell_to_delete)
+
                 return ret_list
 
         return []
@@ -575,7 +579,6 @@ class agnt:
         cur_cell_j = current_cell[1]
 
         #adds single index with clue e.g a = val , b = val etc
-        print("aaaaaaaaaaaaaaaaaa", list)
         for index in list:
             if index in self.visited_cells: # checks if any neighbor is already visited - if it has been revealed then we remove it from the list before processing it
                 list.remove(index)
@@ -615,8 +618,6 @@ class agnt:
         bottom_left = [ i + 1, j - 1 ]
         bottom = [ i + 1, j ]
         bottom_right = [ i + 1, j + 1 ]
-
-
 
         # Top row
         if ( top_left in list ) and ( top in list ):   # a + b
@@ -770,10 +771,52 @@ class agnt:
 
         print('----')
 
-    # Functionality: When a cell has been revealed - go through knowledge base and delete the var from equations
-    def delete_var(self, list, clue, delete_cell):
-        print()
+    # Helper function for delete var
+    def delete_var_helper(self,equation,cell):
+        check = 0
+        for index in equation:
+            status = isinstance(index, list)
+            # One thing to consider - when you delete var you also delete the single variable assignment not just from the equation e.g A = 0
+            if status:
+                i = index[0]
+                j = index[1]
+                if i == cell[0] and j == cell[1]: # when a variable to delete is found in equation delete
+                    equation.remove(index)
+                    check = 1
+                    return equation
+        return []
 
+
+
+    # Functionality: When a cell has been revealed - go through knowledge base and delete the var from equations
+    def delete_var(self, cell_to_delete):
+        # iterates through every single thing in knowledge base to remove that variable from every equation
+        for index in self.knowledge_base:
+            ret_list = self.delete_var_helper(index,cell_to_delete)
+            if len(ret_list) > 1:
+                #print("Returned list is :                   " ,  ret_list)
+                self.knowledge_base.remove(index)
+                self.knowledge_base.append( ret_list )
+
+        # not sure If i need this piece of code:
+        if [0] in self.knowledge_base:
+            self.knowledge_base.remove([0])
+        if [1] in self.knowledge_base:
+            self.knowledge_base.remove([1])
+        if [2] in self.knowledge_base:
+            self.knowledge_base.remove([2])
+        if [3] in self.knowledge_base:
+            self.knowledge_base.remove([3])
+        if [4] in self.knowledge_base:
+            self.knowledge_base.remove([4])
+        if [5] in self.knowledge_base:
+            self.knowledge_base.remove([5])
+        if [6] in self.knowledge_base:
+            self.knowledge_base.remove([6])
+        if [7] in self.knowledge_base:
+            self.knowledge_base.remove([7])
+        if [8] in self.knowledge_base:
+            self.knowledge_base.remove([8])
 
     # Functionality: checks current_cell neighbors and determine which cell is a hidden cell, which cell is already visited and what cell is a mine
     def process_current_cell_csp(self, i, j):
