@@ -9,7 +9,7 @@ from collections import deque
 
 # To comment blocks of code press ctrl + /
 from mswp.boardenvironment import environment
-from mswp.agent import agnt
+from mswp.agent import Agnt
 
 class start:
     PYGAMEWIDTH = 300  # 600   # Do not change this: This is window sizing
@@ -69,24 +69,25 @@ class start:
         #print("index: " , index_board_i , ",", index_board_j)
         val = obj.get_clue(self.board_array , index_board_i, index_board_j)
         self.highlight_board(index_board_i,index_board_j)
-        returned_list =  self.agent_class.process_current_cell(index_board_i,index_board_j)
 
+        # returned_list =  self.agent_class.process_current_cell(index_board_i,index_board_j)
+        # #print(returned_list)
+        # # Note: MAKE SURE TO CHECK IF THE NEIGHBOR LIST HAS ANY CELL THAT HAS BEEN REVEALED OR MARKED AS A MINE/FLAGGED
+        # self.agent_class.form_equation(returned_list, val, [index_board_i,index_board_j])
+
+        #self.agent_class.csp_solver(returned_list)
+
+
+        returned_list =  self.agent_class.process_current_cell_csp(index_board_i,index_board_j)
         #print(returned_list)
-
         # Note: MAKE SURE TO CHECK IF THE NEIGHBOR LIST HAS ANY CELL THAT HAS BEEN REVEALED OR MARKED AS A MINE/FLAGGED
+        self.agent_class.form_equation(returned_list, val, [index_board_i,index_board_j])
 
+        # add a new func that removes duplicates from kb - takes its first element and traverses rest of the kb and if it finds a duplicate it deletes it
 
-        list = returned_list
-        self.agent_class.form_equation(list, val, [index_board_i,index_board_j])
+        self.agent_class.csp_solver(returned_list, [index_board_i,index_board_j])
 
-        #
-        # list = [[0, 1], [2, 1], [1, 0], [1, 2], [0, 0], [0, 2], [2, 0], [2, 2]]
-        # self.agent_class.form_equation(list, 1, [1,1])
-
-        # list = [[0, 1] , [1,0] , [1,1]]
-        # self.agent_class.form_equation(list, 1, [0,0])
-
-        #self.agent_class.traverse_board(returned_list)
+        #self.agent_class.traverse_board(returned_list) # to automate movement
 
         #self.highlight( returned_list )
 
@@ -106,7 +107,7 @@ class start:
         self.environment_class.generate_board(self.board_array)
         print(self.board_array) # shows map where the mines are
 
-        self.agent_class = agnt( self.board_array , self.row, self.col, self.box_height, self.box_width)
+        self.agent_class = Agnt( self.board_array , self.row, self.col, self.box_height, self.box_width)
         self.agent_class.set_environment_obj(self.environment_class)    # because of this method agent class can use environment methods now
 
         pygame.display.flip()
