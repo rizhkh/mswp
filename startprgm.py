@@ -81,13 +81,15 @@ class start:
         #self.agent_class.csp_solver(returned_list)
 
 
+        # Reveales the cell
         returned_list =  self.agent_class.process_current_cell_csp(index_board_i,index_board_j)
-        #print(returned_list)
-        # Note: MAKE SURE TO CHECK IF THE NEIGHBOR LIST HAS ANY CELL THAT HAS BEEN REVEALED OR MARKED AS A MINE/FLAGGED
+        self.agent_class.var_removed_confirmed([index_board_i,index_board_j])
+        # Forms equations of un revealed cells of reveal cells
         self.agent_class.form_equation(returned_list, val, [index_board_i,index_board_j])
 
         # add a new func that removes duplicates from kb - takes its first element and traverses rest of the kb and if it finds a duplicate it deletes it
 
+        # Tries to determine which cell to open from neighbor list
         self.agent_class.csp_solver(returned_list, [index_board_i,index_board_j])
 
         #self.agent_class.traverse_board(returned_list) # to automate movement
