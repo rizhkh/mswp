@@ -10,10 +10,13 @@ if __name__ == '__main__':
     resolution = (450,450) #(420, 420)  # screen resolution
     flags = pygame.DOUBLEBUF
     ThingsToAppearOnScreen_Display = pygame.display.set_mode(resolution,flags)  # This sets the width and height of the screen that pops up
-    m = startprgm.start(ThingsToAppearOnScreen_Display)
-    flamability_rate = 0.6
 
-    m.start_algorithm(m, 'Own', flamability_rate) # StrategyOne , StrategyTwo, Own
+    ThingsToAppearOnScreen_Display_2 = pygame.display.set_mode(resolution, flags)
+
+    m = startprgm.start(ThingsToAppearOnScreen_Display)
+
+    m.start_algorithm(m)
+
 
     window_display_status = True
 

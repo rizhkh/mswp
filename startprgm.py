@@ -19,8 +19,10 @@ class start:
     box_width = 19
     box_height = 19
     board_array = np.zeros((0, 0), dtype=int)
+    board_array_2 = np.zeros((0, 0), dtype=int)
     #board_array = np.zeros((0, 0), dtype=object)
     screen = None
+    screen_two = None
 
     list_of_all_rects = []
 
@@ -32,8 +34,9 @@ class start:
 
     total_mines = 0
 
-    def __init__(self, sc_py):
-        self.screen = sc_py
+    def __init__(self, scree_one):
+        self.screen = scree_one
+
 
     def get_arr(self):
         return self.board_array
@@ -91,9 +94,30 @@ class start:
 
         #self.highlight( returned_list )
 
-    def start_algorithm(self, obj, choice, flammability_rate):
+    def forSimpleWindow(self):
+        for i in range(0 , len( self.board_array_2) ):
+            for j in range(0, len( self.board_array_2 )):
+                status = self.environment_class.get_cell_value(self.board_array_2,i,j)
+
+    def highlight_board_empty(self,i,j):
+        # canvas_arr_i = i * 20  # the reason it is being multiplied is because the cell size is set to 20 - if its the orignal value then it causes GUI problems
+        # canvas_arr_j = j * 20
+        status = self.environment_class.get_cell_value(self.board_array,i,j)
+        if status != 1:
+            #color = (150, 150, 150)
+            val = self.environment_class.get_clue(self.board_array,i,j)
+            #self.environment_class.rect_clicked( str(val) , color, canvas_arr_i,canvas_arr_j)
+            self.environment_class.color_cell(str(val), i, j,0)
+        elif status == 1:   # IF THE CELL IS A MINE
+            color = (255, 0, 0)
+            self.total_mines += 1
+            #self.environment_class.rect_clicked('', color, canvas_arr_i, canvas_arr_j)
+            self.environment_class.color_cell('', i, j,1)
+
+    def start_algorithm(self, obj):
 
         self.board_array = np.zeros((self.row, self.col), dtype=int)
+
         self.board_array_for_agent_info = np.copy(self.board_array)
 
         pygame.display.set_caption("MineSweeper", "MS")
@@ -103,8 +127,8 @@ class start:
 
         #self.generate_board()   # This function draws the maze
         self.board_array = self.environment_class.add_mines_randomly(self.board_array)
-
         self.environment_class.generate_board(self.board_array)
+        self.board_array_2 = np.copy(self.board_array)
         print(self.board_array) # shows map where the mines are
 
         self.agent_class = Agnt( self.board_array , self.row, self.col, self.box_height, self.box_width)

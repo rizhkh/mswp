@@ -554,16 +554,6 @@ class Agnt:
             else:
                 self.update_duplicate(index, 1, clue)
 
-            # if ( [index, 0] not in self.knowledge_base ) and \
-            #         ([index, 1] not in self.knowledge_base) and \
-            #         ([index, 2] not in self.knowledge_base) and\
-            #         ([index, 3] not in self.knowledge_base) and \
-            #         ([index, 4] not in self.knowledge_base) and \
-            #         ([index, 5] not in self.knowledge_base) and \
-            #         ([index, 6] not in self.knowledge_base) and \
-            #         ([index, 7] not in self.knowledge_base) and \
-            #         ([index, 8] not in self.knowledge_base):
-            #     self.knowledge_base.append( [ index , clue] )
 
         i = current_cell[0]
         j = current_cell[1]
@@ -850,75 +840,208 @@ class Agnt:
 
         return []
 
+    # this func helps subset look at equation and return value of a+b or b+c from a+b+c equation
+    def subset_helper(self, var_1,var_2):
+        #print(" in subset helper -------")
+        # a + b + c = 2 => (a+b) + c and a+b = 1 we can deduce that c would be flagged as c=1
+        if len(var_2) > 1:
+            eq_0 = [var_1, var_2, [0]]
+            eq_1 = [var_1, var_2, [1]]
+            eq_2 = [var_1, var_2, [2]]
+            eq_3 = [var_1, var_2, [3]]
+            eq_4 = [var_1, var_2, [4]]
+            eq_5 = [var_1, var_2, [5]]
+            eq_6 = [var_1, var_2, [6]]
+            eq_7 = [var_1, var_2, [7]]
+            eq_8 = [var_1, var_2, [8]]
+            val = None
 
-    # returns csp equations with required cell in it
-    def search_knowledge_base(self, cell):
-        ret_list = []
-        for i in self.knowledge_base:
-            val = i[-1]
-            if [val] in i:   # you might get .any or .all / numpy32int error if you do look at delete var code
-                i.remove([val])
-                i.append(val)
-                if len(i)>2:
-                    ret_list.append( i )    # i is the eq e.g [a,b,0],[a,b,c,1] etc
-        return ret_list # ret is [ [a,b,0] , [a,b,c,1] ]
+            if ( eq_0 in self.knowledge_base ):
+                val = eq_0[-1]
+                val = val[0]
+                print("-------------------- true for eq0 : ",eq_0, "| Val is : ", val )
 
+            if ( eq_1 in self.knowledge_base ):
+                val = eq_1[-1]
+                val = val[0]
+                print("-------------------- true for eq 1 : ",eq_1, "| Val is : ", val )
 
-    def equation_solver_csp(self, passed_list):
+            if ( eq_2 in self.knowledge_base ):
+                val = eq_2[-1]
+                val = val[0]
+                print("-------------------- true for eq 2 : ",eq_2, "| Val is : ", val )
+
+            if (eq_3 in self.knowledge_base):
+                val = eq_3[-1]
+                val = val[0]
+                print("-------------------- true for eq 3 : ",eq_3, "| Val is : ", val )
+
+            if ( eq_4 in self.knowledge_base ):
+                val = eq_4[-1]
+                val = val[0]
+                print("-------------------- true for eq 4 : ",eq_4, "| Val is : ", val )
+
+            if ( eq_5 in self.knowledge_base ):
+                val = eq_5[-1]
+                val = val[0]
+                print("-------------------- true for eq 5 : ",eq_5, "| Val is : ", val )
+
+            if (eq_6 in self.knowledge_base):
+                val = eq_6[-1]
+                val = val[0]
+                print("-------------------- true for eq 6: ",eq_6, "| Val is : ", val )
+
+            if ( eq_7 in self.knowledge_base ):
+                val = eq_7[-1]
+                val = val[0]
+                print("-------------------- true for eq 7: ",eq_7, "| Val is : ", val )
+
+            if( eq_8 in self.knowledge_base ):
+                val = eq_8[-1]
+                val = val[0]
+                print("-------------------- true for eq 8: ",eq_8, "| Val is : ", val )
+            return val
+        return None
+
+    def subset(self, passed_list, val):  # note: we are only for solving subset for 3 eqs for now
+        if len(passed_list)>2:
+            val = val[0]
+            var_1 = passed_list[0]
+            var_2 = passed_list[1]
+
+            if len(passed_list) >= 4:
+                ret_val = self.subset_helper(var_1,var_2) # returned value will be compared to value of complete equation
+            print("Value from subset helper: " , ret_val)
+
+            if ret_val != None:
+                print("This equattion is being passed to subset ", passed_list)
+                var_3 = val - ret_val
+                if var_3 != 0:
+                    sum = var_3 + ret_val
+                    if sum == val:
+                        return passed_list[2]
+            else:
+                var_2 = passed_list[1]
+                var_3 = passed_list[2]
+                ret_val = self.subset_helper(var_2, var_3)
+                if ret_val != None:
+                    print("This equattion is being passed to subset ", passed_list)
+                    var_1 = val - ret_val
+                    if var_1 != 0:
+                        sum = var_1 + ret_val
+                        if sum == val:
+                            return passed_list[1]
+        return False
+
+    def equation_solver_csp(self, passed_list, length,passed_cell):
         # passed list is just the list with equations of neighbor cells of current cell to determine if safe or not
-        print("-----equation csp ---------")
-        print("starting list:" , passed_list)
+        # NOTE: SOLVE THIS: I AM GETTING VARIABLES THAT SHARE NEIGHBORS WITH OTHERS - GET EQUATIONS THAT ONLY SHARE
+        var_that_are_true = []
+        check = 0
+        # note : index is the whole equation e.g [a,b,1] etc
 
         for index in passed_list:
             clue = index[-1]
-            if len(index)>2:
-                print("CHECKING IF ANY VAR IS EQUAL ----->")
-                if len(index) == 3:
-                    print("CHECKING TWO VARIABLES ----->")
-                    print(index , " == " , clue)
-                    sum = 2
-                    if sum==clue[0]:
-                        print("sum==clue[0]" , clue[0])
-                        print("Clue ", clue)
-                        print("passed_list" , index)
-
-                        index.remove([clue])
-                        index.append([True])
-                        print("adding boolean --------------->" , index)
-                        #index[-1] = True    # if number of var equal val then replace val with True meaning it should be flagged
-
-                if len(index) == 4:
+            if len(index) >= 4: # a + b + c
+                ret_val = self.subset(index, clue)
+                print(ret_val)
+                if ret_val != False:
+                    print("Subset ============================")
+                    print(ret_val)
+                    var_that_are_true.append(index)
+                    passed_list.remove(index)
+                else:
+                    print(" ret_val ====== FALSE")
                     sum = 3
-                    if sum==clue[0]:
-                        print("sum==clue[0]" , clue[0])
-                        print("Clue ", clue)
-                        print("passed_list" , passed_list)
-
-                        index.remove([clue])
-                        index.append([True])
-                        print("adding boolean --------------->" , index)
-                        #index[-1] = True    # if number of var equal val then replace val with True meaning it should be flagged
-
-        print("returning list:" , passed_list)
-        print(" ------end of csp equation solver -----")
-        return passed_list
+                    if sum == clue[0]:
+                        var_that_are_true.append(index)
+                        passed_list.remove(index)
+                        # just remove the true equation from passed list so it does not have to be solved again
+                    else:
+                        check = 1
+        if check == 1:
+            for index in passed_list:
+                clue = index[-1]
+                if len(index) == 3:
+                    sum = 2
+                    if sum == clue[0]:
+                        var_that_are_true.append(index)
+                        passed_list.remove(index)
+        return var_that_are_true # MAKE SURE TO CHANGE THIS TO var_that_are_true ***********************************
 
 
     def csp_solver(self, neighbor_list,passed_cell):
-        # Here I need list of neighbors of only hidden neighbors
-        print("------------ start of csp solver ---------------")
         hidden_neighbors = self.get_hidden_cells_list(neighbor_list)
-        print("Returned hidden_neighbors of " , passed_cell , " : ",  hidden_neighbors)
-        for index in hidden_neighbors:  # iterate cell by cell e.g index is [0,1] then [0,1] then [0,2] etc
-            ret_list = self.search_knowledge_base(index)    # each hidden neighbor cell is prcoessed here
-            print("Returned equations from KB: ", ret_list)
-            list_ans = self.equation_solver_csp(ret_list)
-            print("------------ Returned List ---------------")
-            print(list_ans)
-            print("-------------End of csp solver func--------------")
+
+        final_list = []
+
+        # print("current cell:", passed_cell)
+        # for index in hidden_neighbors:  # iterate cell by cell e.g index is [0,1] then [0,2] then [0,3] etc
+        #     ret_list = self.search_knowledge_base(index, hidden_neighbors)    # each hidden neighbor cell is prcoessed here
+        #     print("equations from kb for each neighbor: " , ret_list)
+        #     list_ans = self.equation_solver_csp(ret_list , len(hidden_neighbors), passed_cell)
+        #     for i in list_ans:
+        #         for j in i:
+        #             if len(j) > 1:
+        #                 if j not in final_list:
+        #                     final_list.append(j)
+        #     if final_list:
+        #         #print("current cell : ", passed_cell)
+        #         #print("var that should be flagged: ", final_list, " | length (hidden neigbors): ", len(hidden_neighbors))
+        #         # print("^^^^^^^^^^^^^^^^^^^^^^^^^^^")
+        #         # print(final_list)
+        #         # print(hidden_neighbors)
+        #         # print("^^^^^^^^^^^^^^^^^^^^^^^^^^^")
+        #         for i in final_list:
+        #             if i in hidden_neighbors:
+        #                 hidden_neighbors.remove(i)
 
 
-        print()
+        print("current cell:", passed_cell)
+
+        # Gets the csp equations
+        eq_of_neighbor_cells = []  # This list contains csp eq from kb of required cells
+        for index in hidden_neighbors:  # iterate cell by cell e.g index is [0,1] then [0,2] then [0,3] etc
+            self.search_knowledge_base(index, hidden_neighbors , eq_of_neighbor_cells)    # each hidden neighbor cell is prcoessed here
+
+        self.skb_helper(hidden_neighbors , eq_of_neighbor_cells)    # removes eq that have var not neighbors
+        #print("equations from kb for each neighbor: " , eq_of_neighbor_cells)
+
+        # Solves the CSP equations
+        list_ans = self.equation_solver_csp(eq_of_neighbor_cells , len(hidden_neighbors), passed_cell)
+        for i in list_ans:  # This for loop removes val from end of csp equation e.g [a,b,0] -> [a,b]
+            for j in i:
+                if len(j) > 1:
+                    if j not in final_list:
+                        final_list.append(j)
+
+        if final_list:
+            # for i in final_list:
+            #     if i in hidden_neighbors:
+            #         hidden_neighbors.remove(i)
+            for i in final_list:
+                if i in hidden_neighbors:
+                    final_list.remove(i)
+
+        print("Safe cell : ", hidden_neighbors)
+        print(hidden_neighbors)
+        self.flag_cells(final_list)
+
+    # returns csp equations with required cell in it
+    def search_knowledge_base(self, cell, listOfNeighbors, used_list):
+        for i in self.knowledge_base:
+            if cell in i:
+                if i not in used_list:
+                    used_list.append(i)
+
+    def skb_helper(self, hidden_neigh, used_list):
+        for i in used_list:
+            if len(i)>2:
+                for j in i:
+                    if len(j)>1:
+                        if j not in hidden_neigh:
+                            if i in used_list:
+                                used_list.remove(i)
 
 ###################### CODE FOR BASIC ALGORITHM MIGHT HAVE TO COME BACK TO IT FOR GRAPH GENERATION REPORT
 
