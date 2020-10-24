@@ -78,22 +78,22 @@ class start:
         # # Note: MAKE SURE TO CHECK IF THE NEIGHBOR LIST HAS ANY CELL THAT HAS BEEN REVEALED OR MARKED AS A MINE/FLAGGED
         # self.agent_class.form_equation(returned_list, val, [index_board_i,index_board_j])
 
-        #self.agent_class.csp_solver(returned_list)
-
-
         # Reveales the cell
-        returned_list =  self.agent_class.process_current_cell_csp(index_board_i,index_board_j)
+        returned_list =  self.agent_class.constraint_cell_processing(index_board_i,index_board_j)
+
         self.agent_class.var_removed_confirmed([index_board_i,index_board_j])
-        # Forms equations of un revealed cells of reveal cells
+
+        # Forms equations of un revealed neighbor cells of current cell and gets stored in Knowledge base
         self.agent_class.form_equation(returned_list, val, [index_board_i,index_board_j])
 
-        # add a new func that removes duplicates from kb - takes its first element and traverses rest of the kb and if it finds a duplicate it deletes it
 
-        # Tries to determine which cell to open from neighbor list
-        self.agent_class.csp_solver(returned_list, [index_board_i,index_board_j])
+        safe_cells_to_traverse = []
 
-        #self.agent_class.traverse_board(returned_list) # to automate movement
+        safe_cells_to_traverse = self.agent_class.csp_solver(returned_list, [index_board_i,index_board_j])
+        for i in safe_cells_to_traverse:
+            self.environment_class.color_cell('T', i[0], i[1], 'testing')
 
+        #self.agent_class.traverse(safe_cells_to_traverse) # to automate movement
         #self.highlight( returned_list )
 
     def forSimpleWindow(self):
@@ -109,7 +109,10 @@ class start:
             #color = (150, 150, 150)
             val = self.environment_class.get_clue(self.board_array,i,j)
             #self.environment_class.rect_clicked( str(val) , color, canvas_arr_i,canvas_arr_j)
-            self.environment_class.color_cell(str(val), i, j,0)
+            if val == 0 :
+                self.environment_class.color_cell('', i, j, 0)
+            else:
+                self.environment_class.color_cell(str(val), i, j,0)
         elif status == 1:   # IF THE CELL IS A MINE
             color = (255, 0, 0)
             self.total_mines += 1

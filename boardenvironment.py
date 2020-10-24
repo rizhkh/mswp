@@ -154,6 +154,12 @@ class environment:
         row_x = row_x * 20
         col_y = col_y * 20
 
+        if status == 'testing':
+            #Note: Make sure to add the other 2d array values here to store the value - currently this only has the canvas gui aspect functionality to it
+            Grid_box_Object = pygame.draw.rect(self.screen, (187,187,187), [col_y, row_x, self.box_width, self.box_height])   # row_x=row and col_y=col is the position where the box will be displayed
+            text = self.font.render(message, True, (255, 255, 255))
+            self.screen.blit(text, Grid_box_Object.midtop)
+            pygame.display.flip()
         if status == 0:
             #Note: Make sure to add the other 2d array values here to store the value - currently this only has the canvas gui aspect functionality to it
             Grid_box_Object = pygame.draw.rect(self.screen, (150, 150, 150), [col_y, row_x, self.box_width, self.box_height])   # row_x=row and col_y=col is the position where the box will be displayed
