@@ -10,9 +10,9 @@ class environment:
     list_of_all_rects = []
 
 
-    row = 10
-    col = 10
-    total_mines = 15
+    row = 0
+    col = 0
+    total_mines = 0
     mines = total_mines
 
 
@@ -27,18 +27,25 @@ class environment:
     start_i = 10    # starting index i for current node (parent node)
     start_j = 10    # starting index j for current node (parent node)
 
-    def __init__(self , scrn, arr, obj, bh, bw):
+    def __init__(self , scrn, arr, obj, bh, bw, r , c, m):
         self.font = pygame.font.SysFont('Arial', 12)
         self.m = obj    #Copy the ref address in an empty obj -> point towards the orignal address
         self.screen = scrn
         self.maze_array = np.copy(arr)  # (obj.get_arr())
         self.box_height = bh
         self.box_width = bw
+        self.row = r
+        self.col = c
+        self.total_mines = m
+        self.mines = self.total_mines
 
     # Returns value of cell in 2d array
     def get_cell_value(self,arr,i,j):
         return arr[i][j]
 
+    def set_mine_count(self, m):
+        self.total_mines = m
+        self.mines = self.total_mines
 
     # Functionality: Check neighbors and returns total numbers of mines present in neighbors - returns clue
     # Returns number of mines in neighbors - Clue
@@ -115,19 +122,11 @@ class environment:
             if i == len(arr):
                 i=0
 
-            rnum = random.randint(0, 3)
+            rnum = random.randint(0, 6)
             if rnum == 0 and self.mines != 0:
                 arr[i][j] = 1
                 self.mines -= 1
             j += 1
-
-        # for i in range(0, len(arr) ):
-        #     for j in range(i, len(arr) ):
-        #         rnum = random.randint(0, 3)
-        #         if rnum==0 and self.mines!=0:
-        #             arr[i][j] = 1
-        #             self.mines =- 1
-
         return arr
 
 
@@ -139,7 +138,6 @@ class environment:
         return A
 
     def draw_cells_map(self, arr,screen, color):
-        pl = 6
         for i in range(0, self.row):
             for j in range(0, self.col):
                 #if self.board_array[i,j] == 0:
@@ -183,3 +181,4 @@ class environment:
 
     def get_all_rects(self):
         return self.list_of_all_rects
+

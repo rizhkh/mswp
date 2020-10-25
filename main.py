@@ -1,5 +1,6 @@
 import pygame as pygame
 import startprgm
+import tkinter as tk
 import numpy as np
 import time
 from ast import literal_eval
@@ -8,12 +9,17 @@ from ast import literal_eval
 if __name__ == '__main__':
     pygame.init()  # initializes the pygame object - Required to run the window on screen
     resolution = (450,450) #(420, 420)  # screen resolution
+
+    row = 10  # row
+    col = 10  # col
+    mine_density = 5
+
     flags = pygame.DOUBLEBUF
     ThingsToAppearOnScreen_Display = pygame.display.set_mode(resolution,flags)  # This sets the width and height of the screen that pops up
 
     ThingsToAppearOnScreen_Display_2 = pygame.display.set_mode(resolution, flags)
 
-    m = startprgm.start(ThingsToAppearOnScreen_Display)
+    m = startprgm.start(ThingsToAppearOnScreen_Display, row, col, mine_density)
 
     m.start_algorithm(m)
 

@@ -14,8 +14,10 @@ from mswp.agent import Agnt
 class start:
     PYGAMEWIDTH = 300  # 600   # Do not change this: This is window sizing
     PYGAMEHEIGHT = 300  # Do not change this: This is window sizing
-    row = 10  # row
-    col = 10  # col
+
+    row = 0  # row
+    col = 0  # col
+
     box_width = 19
     box_height = 19
     board_array = np.zeros((0, 0), dtype=int)
@@ -34,8 +36,16 @@ class start:
 
     total_mines = 0
 
-    def __init__(self, scree_one):
+
+    row = 0  # row
+    col = 0  # col
+    mine_density = None
+
+    def __init__(self, scree_one, r , c, mines):
         self.screen = scree_one
+        self.row = r
+        self.col = c
+        self.mine_density = mines
 
 
     def get_arr(self):
@@ -51,12 +61,10 @@ class start:
         if status != 1:
             #color = (150, 150, 150)
             val = self.environment_class.get_clue(self.board_array,i,j)
-            #self.environment_class.rect_clicked( str(val) , color, canvas_arr_i,canvas_arr_j)
             self.environment_class.color_cell(str(val), i, j,0)
         elif status == 1:   # IF THE CELL IS A MINE
             color = (255, 0, 0)
             self.total_mines += 1
-            #self.environment_class.rect_clicked('', color, canvas_arr_i, canvas_arr_j)
             self.environment_class.color_cell('', i, j,1)
 
     # This function works just once - you click once that is it - the rest is auto movement
@@ -69,14 +77,9 @@ class start:
         index_board_j= int(j/20)
         # after this wherever we send i and j we dont need to worry about rescaling issues
 
-        #print("index: " , index_board_i , ",", index_board_j)
         val = obj.get_clue(self.board_array , index_board_i, index_board_j)
         self.highlight_board(index_board_i,index_board_j)
-
-        # returned_list =  self.agent_class.process_current_cell(index_board_i,index_board_j)
-        # #print(returned_list)
         # # Note: MAKE SURE TO CHECK IF THE NEIGHBOR LIST HAS ANY CELL THAT HAS BEEN REVEALED OR MARKED AS A MINE/FLAGGED
-        # self.agent_class.form_equation(returned_list, val, [index_board_i,index_board_j])
 
         # Reveales the cell
         returned_list =  self.agent_class.constraint_cell_processing(index_board_i,index_board_j)
@@ -93,7 +96,7 @@ class start:
         for i in safe_cells_to_traverse:
             self.environment_class.color_cell('T', i[0], i[1], 'testing')
 
-        #self.agent_class.traverse(safe_cells_to_traverse) # to automate movement
+        self.agent_class.traverse(safe_cells_to_traverse) # to automate movement
         #self.highlight( returned_list )
 
     def forSimpleWindow(self):
@@ -127,9 +130,9 @@ class start:
 
         pygame.display.set_caption("MineSweeper", "MS")
         pygame.display.flip()
-
-        self.environment_class = environment(self.screen, self.board_array, obj, self.box_height, self.box_width)
-
+        print("mine count " , self.mine_density)
+        self.environment_class = environment(self.screen, self.board_array, obj, self.box_height, self.box_width , self.row , self.col , self.mine_density)
+        self.environment_class.set_mine_count( self.mine_density )
         #self.generate_board()   # This function draws the maze
         self.board_array = self.environment_class.add_mines_randomly(self.board_array)
         self.environment_class.generate_board(self.board_array)
@@ -138,5 +141,5 @@ class start:
 
         self.agent_class = Agnt( self.board_array , self.row, self.col, self.box_height, self.box_width)
         self.agent_class.set_environment_obj(self.environment_class)    # because of this method agent class can use environment methods now
-
+        self.agent_class.init_all_cells()
         pygame.display.flip()
