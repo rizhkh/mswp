@@ -747,7 +747,7 @@ class Agnt:
                         clue = clue - 1
                         eq = [i[0] , [clue]]
                         self.knowledge_base.remove(i)
-                        self.knowledge_base.append(eq)
+                        #self.knowledge_base.append(eq)
                     #self.knowledge_base.remove(i)
 
                 if len(i) == 3:  # (a,b,0)
@@ -779,6 +779,9 @@ class Agnt:
                         eq = [var_0, var_1, [clue]]
                     self.knowledge_base.remove(i)
                     self.knowledge_base.append(eq)
+
+        # now that var is removed check which variables are 0 and totalvarinequats == clue
+        # and check if a var that is flagged if its value changed if it did revert it to non flagged
 
     # this func helps subset look at equation and return value of a+b or b+c from a+b+c equation
     def subset_helper(self, var_1, var_2):
@@ -813,14 +816,6 @@ class Agnt:
             var_1 = passed_list[0]
             var_2 = passed_list[1]
 
-            # if len(passed_list) == 6:
-            #
-            #     for i in range(1,5):
-            #         var_a = passed_list[i-1]
-            #         var_b = passed_list[i]
-            #         ret_val = self.subset_helper(var_a, var_b)
-            #         if ret_val != None:
-            #             break
 
             if len(passed_list) >= 4:
 
@@ -838,48 +833,105 @@ class Agnt:
                             print(" This is the csp eq :" , passed_list)
                             print( "Clue : " , val , " | " , passed_list[-1] )
                             print(passed_list)
-                            print("(", var_1, " + ", var_2, "):", ret_val)
 
-                            # if ret_val == clue: # in this case var_3 is safe
-                            #     c_1 = c_2 = None
-                            #     for i in self.knowledge_base:
-                            #         if len(i) == 2:
-                            #             if var_1 in i:
-                            #                 c_1 = i[-1]
-                            #                 c_1 = c_1[0]
-                            #             if var_2 in i:
-                            #                 c_2 = i[-1]
-                            #                 c_2 = c_2[0]
-                            #
-                            #     if c_1 == None or c_2 == None:
-                            #         a=1
-                            #     else:
-                            #         sum = c_1 + c_2
-                            #         if sum== clue:
-                            #             nl = []
-                            #             if c_1 == 1:
-                            #                 nl.append(c_1)
-                            #             if c_2 == 2:
-                            #                 nl.append(c_2)
-                            #             return nl
-                            # else:
-                            #     sum = var_3 + ret_val
-                            #     # if sum == val:
-                            #     #     return passed_list[2]
-                            #     if var_3 != 0:
-                            #         sum = var_3 + ret_val
-                            #         if sum == val:
-                            #             print(passed_list[2])
-                            #             return passed_list[2]
+                            #now confirm a + b == clue if it does means the third variable is innocent :)
+                            val_1 = self.get_info(var_1, 2)
+                            val_2 = self.get_info(var_2, 2)
 
-                            sum = var_3 + ret_val
-                            # if sum == val:
-                            #     return passed_list[2]
-                            if var_3 != 0:
-                                sum = var_3 + ret_val
-                                if sum == val:
-                                    print(passed_list[2])
+                            val_3 = self.get_info(passed_list[2], 2)
+
+                            if val_1 != None and val_2!= None:
+                                v1_c = val_1[-1]
+                                v1_c = v1_c[0]
+                                v2_c = val_2[-1]
+                                v2_c = v2_c[0]
+
+                                confirm = val_1 + val_2
+                                if confirm!=0 and confirm == ret_val:
+                                    if var_3 != 0:
+                                        sum = var_3 + ret_val
+                                        if sum == val:
+                                            print(passed_list[2])
+                                            return passed_list[2]
+
+                                if v1_c == 0 and v2_c == 0 and val != 0:
                                     return passed_list[2]
+
+                                else:
+                                    print("fuck this 1")
+                                    print("(", val_1, " + ", val_2, "):", ret_val)
+
+                                    s = self.does_cell_exist(passed_list[2])
+                                    if s==True:
+                                        self.update_cell_val(passed_list[2],0)
+
+                                    if s==False:
+                                        self.knowledge_base.append( [passed_list[2] , [0]] )
+
+                                    # if v1_c == val:
+                                    #     return val_1[0]
+                                    # if v2_c == val:
+                                    #     return val_2[0]
+
+                                    if v1_c == val and v2_c != val:
+                                        return val_1[0]
+                                    if v2_c == val and v1_c != val:
+                                        return val_2[0]
+
+                            ####
+                            if val_1 != None and val_3 != None:
+                                v1_c = val_1[-1]
+                                v1_c = v1_c[0]
+                                v2_c = val_3[-1]
+                                v2_c = v2_c[0]
+
+                                confirm = val_1 + val_3
+                                if confirm!=0 and confirm == ret_val:
+                                    if var_3 != 0:
+                                        sum = var_3 + ret_val
+                                        if sum == val:
+                                            print(passed_list[2])
+                                            return passed_list[2]
+
+                                if v1_c == 0 and v2_c == 0 and val != 0:
+                                    return passed_list[2]
+
+                                else:
+                                    print("cunt this 1")
+                                    print("(", val_1, " + ", val_3, ") == ", ret_val)
+
+                                    s = self.does_cell_exist(passed_list[2])
+                                    if s==True:
+                                        self.update_cell_val(passed_list[2],0)
+
+                                    if s==False:
+                                        self.knowledge_base.append( [passed_list[2] , [0]] )
+
+                                    # if v1_c == val:
+                                    #     return val_1[0]
+                                    # if v2_c == val:
+                                    #     return val_2[0]
+
+                                    if v1_c == val and v2_c != val:
+                                        return val_1[0]
+                                    if v2_c == val and v1_c != val:
+                                        return val_3[0]
+
+                            else:
+                                print("fuck this 2")
+                                if val_1 != None:
+                                    v1_c = val_1[-1]
+                                    v1_c = v1_c[0]
+                                    if v1_c == val:
+                                        return val_1[0]
+
+
+                                if val_2 != None:
+                                    v2_c = val_2[-1]
+                                    v2_c = v2_c[0]
+                                    if v2_c == val:
+                                        return val_2[0]
+
 
                 else:
                     var_2 = passed_list[1]
@@ -1000,6 +1052,7 @@ class Agnt:
                 # by subset
 
                 returned_cell = self.subset(index, clue)  # returned_cell is the cell we think is a mine
+                print("returned cell: " , returned_cell)
 
                 if returned_cell != False:  # This condition confirms subsets can be solved
                     # print("Subset ============================")
@@ -1023,8 +1076,9 @@ class Agnt:
 
         return var_that_are_true
 
-
+    # updates cell in knowledge base
     def update_cell(self, cells_to_flag):
+        check = 2
         for i in cells_to_flag:
             for eqs in self.knowledge_base:
                 if len(eqs) == 2:
@@ -1036,6 +1090,29 @@ class Agnt:
                             new_eq = [i, [1]]
                             self.knowledge_base.append(new_eq)
 
+    def update_cell_val(self, cells_to_flag,val):
+        check = 2
+        for i in cells_to_flag:
+            for eqs in self.knowledge_base:
+                if len(eqs) == 2:
+                    if i in eqs:
+                        clue = eqs[-1]
+                        clue = clue[0]
+                        if clue != 0 and clue != 1:
+                            self.knowledge_base.remove(eqs)
+                            new_eq = [i, [val]]
+                            self.knowledge_base.append(new_eq)
+
+    # checks for len=1 variables only
+    def does_cell_exist(self, cells_to_flag):
+        check = 2
+        for i in cells_to_flag:
+            for eqs in self.knowledge_base:
+                if len(eqs) == 2:
+                    if i in eqs:
+                        return True
+
+        return False
 
     def csp_solver(self, neighbor_list, passed_cell):
         hidden_neighbors_list = self.get_hidden_cells_list(neighbor_list)  # gets a list of cells for each neighbor
@@ -1081,7 +1158,7 @@ class Agnt:
         #     self.flag_cells_csp(cells_to_flag)
         cells_to_flag_without_dups = []
         a= []
-        if cells_to_flag:
+        if cells_to_flag: # removes dups from cells_to_flag
             for i in cells_to_flag:
                 if i not in cells_to_flag_without_dups:
                     cells_to_flag_without_dups.append(i)
@@ -1210,6 +1287,71 @@ class Agnt:
                     return index
 
 
+    # def find_csp_eq_answer(self, passed_list, passed_cell):
+    #
+    #     var_that_are_true = []
+    #     check = 0
+    #     # note : index is the whole equation e.g [a,b,1] etc
+    #
+    #     # remove one var eq from list
+    #     for index in passed_list:
+    #         clue = index[-1]
+    #         clue = clue[0]
+    #         val = 100
+    #
+    #         for i in index:
+    #             if i != passed_cell and i!= clue:
+    #
+    #                 for equtations in self.knowledge_base:
+    #                     if i in equtations:
+    #                         if len(equtations) == 2:
+    #                             c = equtations[-1]
+    #                             c = c[0]
+    #                             val = c
+    #
+    #                 if (clue - val) == 0:
+    #                     self.knowledge_base.appent([passed_cell,[0]])
+    #                 if (clue - val) == 1:
+    #                     self.knowledge_base.appent([passed_cell,[0]])
+    #
+    #
+    #         # Eq (a,b,0) is not solvable b
+    #         if len(index) == 3:  # a + b
+    #             returned_cell = self.subset(index, clue)
+    #
+    #             if returned_cell:
+    #                 for i in returned_cell:  # as im returning a nested list thats why I need the for loop e.g [ [] ] and
+    #                     # others are returning just []
+    #                     var_that_are_true.append(i)
+    #
+    #             if returned_cell in hidden_neighbors:
+    #                 hidden_neighbors.remove(returned_cell)
+    #
+    #         # Equation (a,b,c,0) only in this condition
+    #         if len(index) >= 4:  # a + b + c
+    #
+    #             returned_cell = self.subset(index, clue)  # returned_cell is the cell we think is a mine
+    #
+    #             if returned_cell != False:  # This condition confirms subsets can be solved
+    #                 if returned_cell:
+    #
+    #                     if len(returned_cell) >1:
+    #                         for i in returned_cell:
+    #                             var_that_are_true.append(returned_cell)
+    #                     else:
+    #                         var_that_are_true.append(returned_cell)
+    #
+    #                 if len(returned_cell) > 1:
+    #                     for i in returned_cell:
+    #                         if i in hidden_neighbors:
+    #                             hidden_neighbors.remove(i)
+    #                 else:
+    #                     if returned_cell in hidden_neighbors:
+    #                         hidden_neighbors.remove(returned_cell)
+    #
+    #     return var_that_are_true
+
+
     # Functionality: This function takes a list, and uses process_current_cell to process each cell
     def traverse(self, list_cells):
         while self.unvisited_cells:
@@ -1244,11 +1386,42 @@ class Agnt:
                 index_board_i = index[0]
                 index_board_j = index[1]
                 clue = -9
+                print("asd asd asd asd")
                 for i in self.knowledge_base:
                     if len(i)==2:
                         if [index_board_i, index_board_j] in i:
+                            print(i)
                             clue = i[-1]
                             clue = clue[0]
+
+                # go in kb and see if single csp for current index exists. get total len==2 in kb gets
+                # if its more than 1 then go in kb again and try to solve all equations for where current index exists
+                #
+                # tot_eq = []
+                # for i in self.knowledge_base:
+                #     if len(i)==2:
+                #         if [index_board_i, index_board_j] in i:
+                #             tot_eq.append( i )
+                #
+                # if len( tot_eq ) == 1:
+                #     a = tot_eq[-1]
+                #     clue = a[-1]
+                #     clue = clue[0]
+                #     if clue==1:
+                #
+                #         tot_eq.clear()
+                #         for i in self.knowledge_base:
+                #             if [index_board_i, index_board_j] in i:
+                #                     tot_eq.append(i)
+                #
+                #         cells_to_flag = self.equation_solver_csp(eq_of_neighbor_cells, hidden_neighbors_list,
+                #                                                      len(hidden_neighbors_list), passed_cell)
+                #
+                #         def equation_solver_csp(self, passed_list, hidden_neighbors, length, passed_cell):
+                #
+                #         #resolving equations
+
+
                 if clue != 1:
                     list_cells = self.constraint_cell_processing(index_board_i, index_board_j)
 
@@ -1316,7 +1489,6 @@ class Agnt:
                     #self.flagged_cells.append([ index_i,index_j ])
                     print("--------------------------------------------------------------------------------")
 
-
                 else:
                     list_cells = []
                     self.flagcells_consider.append( [index_board_i, index_board_j] )
@@ -1335,13 +1507,29 @@ class Agnt:
                     self.form_equation(list_cells, val, [index_board_i, index_board_j])
                     self.csp_solver(list_cells, [index_board_i, index_board_j])
 
-
+                # before flagging try to look clue values of the neighbors if one of the neighbor clue is 0
+                #     it means it cannot be flagged
+                #
+                # Also keep a list of safe cells and use that in determining flags if neighbor is a safe cell
+                #
+                # Also make sure when a cell is opened in constraint function the value of the equation in KB
+                # is set to 0 e.g (a,0) should now exist in knowledge base so it is helpful in other clues
+                # and when checking for flags check if the mine that should be flagged does not have 0 eq value
+                # and is not in the list of safe cells
 
                 # Flags mines here
                 if len(self.flagged_cells) >= 4 :
+                    print("pussy")
+                    print(self.flagged_cells)
                     fgc = self.flagged_cells.pop(0)
                     index_i = fgc[0]
                     index_j = fgc[1]
+                    print("katana kombat")
+                    print()
+                    print(fgc)
+                    print(index_i)
+                    print(index_j)
+
                     neigh_list = self.get_neighbors_current_cell(index_i,index_j)
                     for i in neigh_list:
                         if i in self.visited_cells:
