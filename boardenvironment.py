@@ -8,15 +8,10 @@ class environment:
     box_height = 0
     box_width = 0
     list_of_all_rects = []
-
-
     row = 0
     col = 0
     total_mines = 0
     mines = total_mines
-
-
-
 
     m = None    # empty object
     maze_array = []
@@ -111,8 +106,8 @@ class environment:
     #Functionality: This randomly adds mines on the board
     def add_mines_randomly(self, arr):
 
-        i = 0
-        j = 0
+        i = 4
+        j = 4
 
         #while i < len(arr):
         while self.mines > 0 :

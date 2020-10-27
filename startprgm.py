@@ -1,13 +1,5 @@
 import pygame as pygame
 import numpy as np
-#import random
-#import alg
-import time
-from ast import literal_eval
-from sys import exit
-from collections import deque
-
-# To comment blocks of code press ctrl + /
 from mswp.boardenvironment import environment
 from mswp.agent import Agnt
 
@@ -59,11 +51,9 @@ class start:
         # canvas_arr_j = j * 20
         status = self.environment_class.get_cell_value(self.board_array,i,j)
         if status != 1:
-            #color = (150, 150, 150)
             val = self.environment_class.get_clue(self.board_array,i,j)
             self.environment_class.color_cell(str(val), i, j,0)
         elif status == 1:   # IF THE CELL IS A MINE
-            color = (255, 0, 0)
             self.total_mines += 1
             self.environment_class.color_cell('', i, j,1)
 
@@ -88,16 +78,12 @@ class start:
 
         # Forms equations of un revealed neighbor cells of current cell and gets stored in Knowledge base
         self.agent_class.form_equation(returned_list, val, [index_board_i,index_board_j])
-
-
         safe_cells_to_traverse = []
-
         safe_cells_to_traverse = self.agent_class.csp_solver(returned_list, [index_board_i,index_board_j])
         for i in safe_cells_to_traverse:
             self.environment_class.color_cell('T', i[0], i[1], 'testing')
 
         self.agent_class.traverse(safe_cells_to_traverse) # to automate movement
-        #self.highlight( returned_list )
 
     def forSimpleWindow(self):
         for i in range(0 , len( self.board_array_2) ):
@@ -133,7 +119,6 @@ class start:
         print("mine count " , self.mine_density)
         self.environment_class = environment(self.screen, self.board_array, obj, self.box_height, self.box_width , self.row , self.col , self.mine_density)
         self.environment_class.set_mine_count( self.mine_density )
-        #self.generate_board()   # This function draws the maze
         self.board_array = self.environment_class.add_mines_randomly(self.board_array)
         self.environment_class.generate_board(self.board_array)
         self.board_array_2 = np.copy(self.board_array)
