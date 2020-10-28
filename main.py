@@ -19,7 +19,7 @@ if __name__ == '__main__':
     tk.Label(master, text="Dimension (D x D)").grid(row=0)
     tk.Label(master, text="Mine Density").grid(row=1)
     tk.Label(master, text="Leave blank to start on default ").grid(row=2)
-    tk.Label(master, text="[Default = 10x10 with 15 mine density] ").grid(row=8)
+    tk.Label(master, text="[Default = 10x10 with 20 mine density] ").grid(row=8)
 
     e1 = tk.Entry(master)
     e2 = tk.Entry(master)
@@ -49,6 +49,13 @@ if __name__ == '__main__':
     if not mine_density and not row:
         row = 10
         mine_density = 15
+
+    else:
+        resolution = (800, 800)
+
+    row = int(row)
+    col = row
+    mine_density = int(mine_density)
 
     flags = pygame.DOUBLEBUF
     ThingsToAppearOnScreen_Display = pygame.display.set_mode(resolution,flags)  # This sets the width and height of the screen that pops up

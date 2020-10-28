@@ -152,86 +152,16 @@ class Agnt:
     def mine_estimate(self, clue, tot_mines, hidden_neighbor_mine):
         # print(clue, " , ", (hidden_neighbor_mine + tot_mines))
         # if (clue - hidden_neighbor_mine) == (tot_mines):
-        # if (clue-tot_mines) == (hidden_neighbor_mine):
-        if clue == (hidden_neighbor_mine + tot_mines):  # use this one
+        if (clue-tot_mines) == (hidden_neighbor_mine):
+        #if clue == (hidden_neighbor_mine + tot_mines):  # use this one
             return True
         return False
 
     def safe_estimator(self, clue, tot_rev_neighbors, hidden_neighbor_mine):
-        # if ((8 - clue) - tot_rev_neighbors) == (hidden_neighbor_mine):
-        if (8 - clue) == (hidden_neighbor_mine + tot_rev_neighbors):  # use this one
+        if ((8 - clue) - tot_rev_neighbors) == (hidden_neighbor_mine):
+        #if (8 - clue) == (hidden_neighbor_mine + tot_rev_neighbors):  # use this one
             return True
         return False
-
-    # def process_current_cell(self, i, j):
-    # ## Functionality: checks current_cell neighbors and determine which cell is a hidden cell, which cell is already
-    # ## visited and what cell is a mine
-    #     print("-----")
-    #     print(self.array_board)
-    #     status = self.environment_obj.get_cell_value(self.array_board, i, j)
-    #     obj = self.get_cur_cell_instance([i, j])
-    #     # obj.current_position    # index in 2d array or matrix
-    #     # obj.status  # whether or not it is a mine or safe
-    #     # obj.clue    # if safe, the number of mines surrounding it indicated by the clue
-    #     # obj.safe_n  # already revealed cells that are not flagged
-    #     # obj.appearing_mines_in_neighbors    # number of flagged cells around it or mines
-    #     # obj.cells_still_unexplored_in_neighbors # number of unexplored neighbors around it
-    #
-    #     if status == 1:
-    #         self.environment_obj.color_cell("", i, j, 1)  # This code marks the cell on GUI board
-    #         self.mine_cells.append([i, j])
-    #         if [i, j] in self.unvisited_cells:
-    #             self.unvisited_cells.remove([i, j])
-    #
-    #     if status != 1:
-    #         self.visited_cells.append([i, j])  # adds current processed cell in list of visited cells if its safe
-    #         if [i, j] in self.unvisited_cells:
-    #             self.unvisited_cells.remove([i, j])  # removing index from unvisited cells
-    #         obj.status = 0  # identifies the index as safe by marking it 0
-    #
-    #         obj.clue = self.environment_obj.get_clue(self.array_board, i,
-    #                                                  j)  # assigns clue (clue is number of mines in adjacent neighbors
-    #
-    #         if obj.clue==0:
-    #             self.environment_obj.color_cell('', i, j, 0)  # This code marks the cell on GUI boards
-    #         else:
-    #             self.environment_obj.color_cell(str(obj.clue), i, j, 0)  # This code marks the cell on GUI boards
-    #
-    #         current_neighbors = self.get_neighbors_current_cell(i, j)  # gets a list of neighbors of current cells
-    #
-    #         # In adjacent cells, returns a value for neighbors that are already visited/revealed
-    #         # Returns just a value not cell indexs that are visited
-    #         visited = self.get_visited_cells(current_neighbors)
-    #
-    #         obj.safe_n = visited
-    #
-    #         # In adjacent cells, returns a value for neighbors that are hidden/unrevealed cells - Returns just a value
-    #         # not cell indexs that are hidden
-    #         hidden = self.get_hidden_cells(current_neighbors)
-    #         obj.cells_still_unexplored_in_neighbors = hidden
-    #
-    #         # In adjacent cells, returns a value for neighbors that are mines - Returns just a value not cell indexs
-    #         # that are flagged or mines
-    #         mines = self.get_mines_in_neighbor_cells(current_neighbors)
-    #         obj.appearing_mines_in_neighbors = mines
-    #
-    #         obj.print_cell_info()  # To print each cell info
-    #
-    #         # code below is for the basic algorithm from the description
-    #         a = self.mine_estimate(obj.clue, mines,
-    #                                hidden)  # this checks the mine code from basic algorithm in the description
-    #         if a:
-    #             self.flag_cells(current_neighbors)
-    #         else:
-    #             self.safe_estimator(obj.clue, visited, hidden)
-    #             ret_list = self.flag_cells_as_safe(current_neighbors)
-    #
-    #             cell_to_delete = [i, j]
-    #             self.delete_var(cell_to_delete) # Removes revealed cell from KB
-    #
-    #             return ret_list
-    #
-    #     return []
 
     def flag_cells_csp(self, current_neighbors):
         obj = self.get_cur_cell_instance(current_neighbors)
@@ -334,16 +264,16 @@ class Agnt:
         # g h i
 
         # adds single index with clue e.g a = val , b = val etc
-        for index in passed_list:
-            # checks if any neighbor is already visited - if it has been revealed then we remove it from the list before
-            # processing it
-            if index in self.visited_cells:
-                passed_list.remove(index)
-            # if [ index , clue] not in self.knowledge_base:  # checks if neighbor list does not exist in knowledge base
-            status = self.check_duplicate([index], 1)
-            # if status is false call the update value method
-            if status:
-                self.knowledge_base.append([index, clue])
+        # for index in passed_list:
+        #     # checks if any neighbor is already visited - if it has been revealed then we remove it from the list before
+        #     # processing it
+        #     if index in self.visited_cells:
+        #         passed_list.remove(index)
+        #     # if [ index , clue] not in self.knowledge_base:  # checks if neighbor list does not exist in knowledge base
+        #     status = self.check_duplicate([index], 1)
+        #     # if status is false call the update value method
+        #     if status:
+        #         self.knowledge_base.append([index, clue])
 
         i = current_cell[0]
         j = current_cell[1]
@@ -363,59 +293,61 @@ class Agnt:
         bottom = [i + 1, j]
         bottom_right = [i + 1, j + 1]
 
-        # ############ TOP ROW 5 elements #############################
-        # # 4 7 8 9 6
-        #
-        # # if a+b+c exists then a+b exist and b+c exists
-        # if (mid_left in passed_list) and (top_left in passed_list) and (top in passed_list) \
-        #         and (top_right in passed_list) and (mid_right in passed_list):
-        #     # make a+b+c = clue , then a+b = clue-1 and b+c = clue -1 whereas for a+b and b+c clue != 0
-        #     equation = [mid_left, top_left, top, top_right, mid_right, clue]
-        #     if equation not in self.knowledge_base:
-        #         status = self.check_duplicate([mid_left, top_left, top, top_right, mid_right], 5)
-        #         if status:
-        #             self.knowledge_base.append(equation)
-        #
-        # ############ Bottomw ROW 5 elements #############################
-        # # 4 1 2 3 6
-        #
-        # # if a+b+c exists then a+b exist and b+c exists
-        # if (mid_left in passed_list) and (bottom_left in passed_list) and (bottom in passed_list) \
-        #         and (bottom_right in passed_list) and (mid_right in passed_list):
-        #     # make a+b+c = clue , then a+b = clue-1 and b+c = clue -1 whereas for a+b and b+c clue != 0
-        #     equation = [mid_left, bottom_left, bottom, bottom_right, mid_right, clue]
-        #     if equation not in self.knowledge_base:
-        #         status = self.check_duplicate([mid_left, bottom_left, bottom, bottom_right, mid_right], 5)
-        #         if status:
-        #             self.knowledge_base.append(equation)
-        #
-        # ############ Left ROW 5 elements #############################
-        # # 8 7 4 1 2
-        #
-        # # if a+b+c exists then a+b exist and b+c exists
-        # if (top in passed_list) and (top_left in passed_list) and (mid_left in passed_list) \
-        #         and (bottom_left in passed_list) and (bottom in passed_list):
-        #     # make a+b+c = clue , then a+b = clue-1 and b+c = clue -1 whereas for a+b and b+c clue != 0
-        #     equation = [top, top_left, mid_left, bottom_left, bottom, clue]
-        #     if equation not in self.knowledge_base:
-        #         status = self.check_duplicate([top, top_left, mid_left, bottom_left, bottom], 5)
-        #         if status:
-        #             self.knowledge_base.append(equation)
-        #
-        # ############ Right ROW 5 elements #############################
-        # # 8 9 6 3 2
-        #
-        # # if a+b+c exists then a+b exist and b+c exists
-        # if (top in passed_list) and (top_right in passed_list) and (mid_right in passed_list) \
-        #         and (bottom_right in passed_list) and (bottom in passed_list):
-        #     # make a+b+c = clue , then a+b = clue-1 and b+c = clue -1 whereas for a+b and b+c clue != 0
-        #     equation = [top, top_right, mid_right, bottom_right, bottom, clue]
-        #     if equation not in self.knowledge_base:
-        #         status = self.check_duplicate([top, top_right, mid_right, bottom_right, bottom], 5)
-        #         if status:
-        #             self.knowledge_base.append(equation)
 
-        # TOP ROW
+
+        ############ TOP ROW 5 elements #############################
+        # 4 7 8 9 6
+
+        # if a+b+c exists then a+b exist and b+c exists
+        if (mid_left in passed_list) and (top_left in passed_list) and (top in passed_list) \
+                and (top_right in passed_list) and (mid_right in passed_list):
+            # make a+b+c = clue , then a+b = clue-1 and b+c = clue -1 whereas for a+b and b+c clue != 0
+            equation = [mid_left, top_left, top, top_right, mid_right, clue]
+            if equation not in self.knowledge_base:
+                status = self.check_duplicate([mid_left, top_left, top, top_right, mid_right], 5)
+                if status:
+                    self.knowledge_base.append(equation)
+
+        ############ Bottomw ROW 5 elements #############################
+        # 4 1 2 3 6
+
+        # if a+b+c exists then a+b exist and b+c exists
+        if (mid_left in passed_list) and (bottom_left in passed_list) and (bottom in passed_list) \
+                and (bottom_right in passed_list) and (mid_right in passed_list):
+            # make a+b+c = clue , then a+b = clue-1 and b+c = clue -1 whereas for a+b and b+c clue != 0
+            equation = [mid_left, bottom_left, bottom, bottom_right, mid_right, clue]
+            if equation not in self.knowledge_base:
+                status = self.check_duplicate([mid_left, bottom_left, bottom, bottom_right, mid_right], 5)
+                if status:
+                    self.knowledge_base.append(equation)
+
+        ############ Left ROW 5 elements #############################
+        # 8 7 4 1 2
+
+        # if a+b+c exists then a+b exist and b+c exists
+        if (top in passed_list) and (top_left in passed_list) and (mid_left in passed_list) \
+                and (bottom_left in passed_list) and (bottom in passed_list):
+            # make a+b+c = clue , then a+b = clue-1 and b+c = clue -1 whereas for a+b and b+c clue != 0
+            equation = [top, top_left, mid_left, bottom_left, bottom, clue]
+            if equation not in self.knowledge_base:
+                status = self.check_duplicate([top, top_left, mid_left, bottom_left, bottom], 5)
+                if status:
+                    self.knowledge_base.append(equation)
+
+        ############ Right ROW 5 elements #############################
+        # 8 9 6 3 2
+
+        # if a+b+c exists then a+b exist and b+c exists
+        if (top in passed_list) and (top_right in passed_list) and (mid_right in passed_list) \
+                and (bottom_right in passed_list) and (bottom in passed_list):
+            # make a+b+c = clue , then a+b = clue-1 and b+c = clue -1 whereas for a+b and b+c clue != 0
+            equation = [top, top_right, mid_right, bottom_right, bottom, clue]
+            if equation not in self.knowledge_base:
+                status = self.check_duplicate([top, top_right, mid_right, bottom_right, bottom], 5)
+                if status:
+                    self.knowledge_base.append(equation)
+
+
 
         # if a+b+c exists then a+b exist and b+c exists
         if (top_left in passed_list) and (top in passed_list) and (top_right in passed_list):
@@ -582,15 +514,15 @@ class Agnt:
 
     # Functionality: When a cell has been revealed - go through knowledge base and delete the var from equations
     def delete_var(self, cell_to_delete):
-        # iterates through every single thing in knowledge base to remove that variable from every equation
         for index in self.knowledge_base:  # index is the equations in knowledge base
-            ret_list = self.delete_var_helper(index, cell_to_delete)
-            if len(ret_list) == 1:  # This deletes just the val in [a,0] when [0] only exists
-                self.knowledge_base.remove(index)
-            if len(ret_list) > 2:
-                if index != ret_list:
+            if cell_to_delete in index:
+                ret_list = self.delete_var_helper(index, cell_to_delete)
+                if len(ret_list) == 1:  # This deletes just the val in [a,0] when [0] only exists
                     self.knowledge_base.remove(index)
-                    self.knowledge_base.append(ret_list)
+                if len(ret_list) > 2:
+                    if index != ret_list:
+                        self.knowledge_base.remove(index)
+                        self.knowledge_base.append(ret_list)
 
     # This confirms variable is removed from remaining csp equations
     def var_removed_confirmed(self, passed_cell):
@@ -665,7 +597,14 @@ class Agnt:
             var_1 = passed_list[0]
             var_2 = passed_list[1]
 
-            if len(passed_list) >= 4:
+            # if len(passed_list) >= 5:
+            #     var_1 = passed_list[0]
+            #     var_2 = passed_list[1]
+            #     var_3 = passed_list[2]
+            #     var_4 = passed_list[3]
+            #     var_5 = passed_list[4]
+
+            if len(passed_list) == 4:
 
                 for i in range(0, 9):
                     ret_val = self.subset_helper(var_1, var_2)
@@ -986,9 +925,10 @@ class Agnt:
                 self.environment_obj.color_cell('', i, j, 0)
             else:
                 self.environment_obj.color_cell(str(val), i, j, 0)
-        elif status == 1:  # IF THE CELL IS A MINE
+        if status == 1:  # IF THE CELL IS A MINE
             color = (255, 0, 0)
             self.environment_obj.color_cell('', i, j, 1)
+        return status
 
     def remove_dup_list(self,passed_list):
         n_list = []
@@ -1002,6 +942,7 @@ class Agnt:
         self.environment_obj.color_cell("", i, j, status)  # This code marks the cell on GUI board
         self.mine_cells.append([i, j])  # when a mine is found on revealing cell it is added to mine_cells
         self.mine_count += 1
+        self.mines_left -= 1
         self.remove_mine_from_kb(i, j)
         if [i, j] in self.unvisited_cells:
             self.unvisited_cells.remove([i, j])
@@ -1017,6 +958,7 @@ class Agnt:
             self.flag_mine(i,j,1)
 
         if status != 1 or self.mine_count >= self.mines_left:
+
             self.visited_cells.append([i, j])  # adds current processed cell in list of visited cells if its safe
             if [i, j] in self.unvisited_cells:
                 self.unvisited_cells.remove([i, j])  # removing index from unvisited cells
@@ -1049,7 +991,24 @@ class Agnt:
             ret_list = self.flag_cells_as_safe(current_neighbors)
 
             cell_to_delete = [i, j]
-            self.delete_var(cell_to_delete)  # Removes revealed cell from KB
+            duplicate_list = []
+
+            # code below removes duplicates for single var equations
+            for i in self.knowledge_base:
+                if len(i) == 2:
+                    if cell_to_delete in i:
+                        duplicate_list.append(i)
+            if duplicate_list:
+                for i in duplicate_list:
+                    for equation in self.knowledge_base:
+                        if len(equation)==2:
+                            if i[0] in equation:
+                                self.knowledge_base.remove(equation)
+                duplicate_list.clear()
+            ##
+
+            self.delete_var(cell_to_delete)  # Removes revealed cell from KB equations of len 3 and >
+            self.knowledge_base.append( [ cell_to_delete,[0]] )
             return ret_list
 
         return []
@@ -1066,9 +1025,13 @@ class Agnt:
     def traverse(self, list_cells):
         while self.unvisited_cells:
             time.sleep(0)
-            self.cell_traverse_list(list_cells)  # add passed list to list of cells to be explored
+            self.cell_traverse_list_basic(list_cells)  # add passed list to list of cells to be explored
 
             if self.traverse_cells:
+                # if len(self.traverse_cells)>1:
+                #     index = self.traverse_cells.pop(1)
+                # else:
+                #     index = self.traverse_cells.pop(-1)
                 index = self.traverse_cells.pop(0)
                 index_board_i = index[0]
                 index_board_j = index[1]
@@ -1083,74 +1046,10 @@ class Agnt:
                             #     clue = clue[0]
                             clue = i[-1]
                             clue = clue[0]
+                            break
 
                 if clue != 1:
                     list_cells = self.constraint_cell_processing(index_board_i, index_board_j)
-                    #
-                    # # check neighbr of neighbor on left right top and above
-                    # # then get neighbor of current cell
-                    # # get common cells in all these lists
-                    # # and check which of those cells are equal to 1 thosea are mines
-                    #
-                    # n_list_left = n_list_right = n_list_top = n_list_bottom = []
-                    # if index_board_i-2 > 0:
-                    #     n_list_left = self.get_neighbors_current_cell(index_board_i - 2, index_board_j)
-                    #
-                    # if index_board_i+2 < self.row:
-                    #     n_list_right= self.get_neighbors_current_cell( index_board_i + 2, index_board_j )
-                    #
-                    # if index_board_j - 2 > 0:
-                    #     n_list_top = self.get_neighbors_current_cell( index_board_i, index_board_j - 2 )
-                    #
-                    # if index_board_j + 2 < self.row:
-                    #     n_list_bottom = self.get_neighbors_current_cell( index_board_i, index_board_j + 2 )
-                    # common_list = []
-                    #
-                    # for i in list_cells:
-                    #     if i in n_list_left and i in n_list_right and i in n_list_top and i in n_list_bottom:
-                    #         if i not in common_list:
-                    #             common_list.append(i)
-                    #
-                    #     if i in n_list_right:
-                    #         if i not in common_list:
-                    #             common_list.append(i)
-                    #
-                    #     if i in n_list_top:
-                    #         if i not in common_list:
-                    #             common_list.append(i)
-                    #
-                    #     if i in n_list_bottom:
-                    #         if i not in common_list:
-                    #             common_list.append(i)
-                    #
-                    #
-                    # fl = []
-                    # for cell in common_list:
-                    #     for i in self.knowledge_base:
-                    #         if len(i) == 2:
-                    #             if cell in i:
-                    #                 clue = i[-1]
-                    #                 print("IT Exists")
-                    #                 print(i)
-                    #                 print(clue)
-                    #                 clue = clue[0]
-                    #                 if clue==1:
-                    #                     if cell not in fl:
-                    #                         fl.append(cell)
-                    #
-                    # print(" TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT ")
-                    # # print()
-                    # # print(n_list_left)
-                    # # print(n_list_right)
-                    # # print(n_list_top)
-                    # # print(n_list_bottom)
-                    # print()
-                    # print("common list:" , common_list)
-                    # print( "Mines:>  ", fl)
-                    # print(" TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT ")
-                    #
-                    # #self.flagged_cells.append([ index_i,index_j ])
-                    # print("--------------------------------------------------------------------------------")
 
                 else:
                     list_cells = []
@@ -1161,14 +1060,17 @@ class Agnt:
                     if i not in self.flagged_cells:
                         self.flagged_cells.append(i)
 
-                if list_cells:  # If not empty()
+                if list_cells:  # This is where neighbor cells equations are formed
                     # val = self.environment_obj.get_clue(self.environment_obj.board_array, index_board_i, index_board_j)
                     val = self.environment_obj.get_clue(self.array_board, index_board_i, index_board_j)
 
-                    self.highlight_board_agent(index_board_i, index_board_j)
-                    self.var_removed_confirmed([index_board_i, index_board_j])
-                    self.form_equation(list_cells, val, [index_board_i, index_board_j])
-                    self.csp_solver(list_cells, [index_board_i, index_board_j])
+                    status = self.highlight_board_agent(index_board_i, index_board_j)
+
+                    if status != 1:
+                        #self.var_removed_confirmed([index_board_i, index_board_j])
+                        self.delete_var([index_board_i, index_board_j])
+                        self.form_equation(list_cells, val, [index_board_i, index_board_j])
+                        self.csp_solver(list_cells, [index_board_i, index_board_j])
 
 
                 # Flags mines here
@@ -1218,127 +1120,146 @@ class Agnt:
                                 clue = clue[0]
                                 if clue == 1:
                                     self.flag_cells_csp( [index_i,index_j] )
-                                    self.cells_that_are_flagged.append([index_i,index_j])
+                                    if [index_i,index_j] not in self.cells_that_are_flagged:
+                                        self.cells_that_are_flagged.append([index_i,index_j])
+
             # in case our list_cells or traverse_cells is empty
             else:
                 self.traverse_cells.append(self.unvisited_cells.pop())
+
         if not self.unvisited_cells:
-            # time.sleep(5)
-            # if self.cells_that_are_flagged:
-            #     for i in self.cells_that_are_flagged:
-            #         for eq in self.knowledge_base:
-            #             if len(eq)==2:
-            #                 if i in eq:
-            #                     clue = i[-1]
-            #                     if clue != 1:
-            #                         self.constraint_cell_processing(i[0], i[1])
+
+            #time.sleep(5)
+            print("Total mines found:", self.mine_count)
             print("EXITING ")
+
+
+
+    def highlight_board(self,i,j):
+        # canvas_arr_i = i * 20  # the reason it is being multiplied is because the cell size is set to 20 - if its the orignal value then it causes GUI problems
+        # canvas_arr_j = j * 20
+        status = self.environment_obj.get_cell_value(self.array_board,i,j)
+        if status != 1:
+            val = self.environment_obj.get_clue(self.array_board,i,j)
+            self.environment_obj.color_cell(str(val), i, j,0)
+        elif status == 1:   # IF THE CELL IS A MINE
+            self.environment_obj.color_cell('', i, j,1)
 
 ###################### CODE FOR BASIC ALGORITHM MIGHT HAVE TO COME BACK TO IT FOR GRAPH GENERATION REPORT
 
-# # Functionality: checks current_cell neighbors and determine which cell is a hidden cell, which cell is already visited and what cell is a mine
-# def process_current_cell(self, i, j):
-#     print("-----")
-#     print(self.array_board)
-#     status = self.environment_obj.get_cell_value(self.array_board, i, j)
-#     obj = self.get_cur_cell_instance([i, j])
-#     # obj.current_position    # index in 2d array or matrix
-#     # obj.status  # whether or not it is a mine or safe
-#     # obj.clue    # if safe, the number of mines surrounding it indicated by the clue
-#     # obj.safe_n  # already revealed cells that are not flagged
-#     # obj.appearing_mines_in_neighbors    # number of flagged cells around it or mines
-#     # obj.cells_still_unexplored_in_neighbors # number of unexplored neighbors around it
-#
-#     if status == 1:
-#         self.environment_obj.color_cell("", i, j, 1)  # This code marks the cell on GUI board
-#         self.mine_cells.append([i, j])
-#         if [i, j] in self.unvisited_cells:
-#             self.unvisited_cells.remove([i, j])
-#
-#     if status != 1:
-#         self.visited_cells.append([i, j])  # adds current processed cell in list of visited cells if its safe
-#         if [i, j] in self.unvisited_cells:
-#             self.unvisited_cells.remove([i, j])  # removing index from unvisited cells
-#         obj.status = 0  # identifies the index as safe by marking it 0
-#
-#         obj.clue = self.environment_obj.get_clue(self.array_board, i, j)    # assigns clue (clue is number of mines in adjacent neighbors
-#
-#         self.environment_obj.color_cell(str(obj.clue), i, j, 0) # This code marks the cell on GUI boards
-#
-#         current_neighbors = self.get_neighbors_current_cell(i, j) # gets a list of neighbors of current cells
-#
-#         visited = self.get_visited_cells(current_neighbors) # In adjacent cells, returns a value for neighbors that are already visited/revealed - Returns just a value not cell indexs that are visited
-#         obj.safe_n = visited
-#
-#         hidden = self.get_hidden_cells(current_neighbors)# In adjacent cells, returns a value for neighbors that are hidden/unrevealed cells - Returns just a value not cell indexs that are hidden
-#         obj.cells_still_unexplored_in_neighbors = hidden
-#
-#         mines = self.get_mines_in_neighbor_cells(current_neighbors)# In adjacent cells, returns a value for neighbors that are mines - Returns just a value not cell indexs that are flagged or mines
-#         obj.appearing_mines_in_neighbors = mines
-#
-#         obj.print_cell_info()   # To print each cell info
-#
-#         # code below is for the basic algorithm from the description
-#         a = self.mine_estimate(obj.clue, mines, hidden) # this checks the mine code from basic algorithm in the description
-#         if a == True:
-#             self.flag_cells(current_neighbors)
-#         else:
-#             a = self.safe_estimator(obj.clue, visited, hidden)
-#             ret_list = self.flag_cells_as_safe(current_neighbors)
-#             return ret_list
-#
-#     return []
-#
-#
-# # If a cell is flagged then this function will flag the cell
-# def flag_cells(self, current_neighbors):
-#     neighbor = self.get_hidden_cells_list(current_neighbors)
-#     for i in neighbor:
-#         obj = self.get_cur_cell_instance(i)
-#         obj.status = 1  # whether or not it is a mine or safe
-#         self.mine_cells.append(i)
-#         self.unvisited_cells.remove( i )
-#         if i in self.traverse_cells:
-#             self.traverse_cells.remove( i )
-#         color = (255, 255, 255)
-#         index_i = i[0]
-#         index_j = i[1]
-#         self.environment_obj.color_cell('', index_i, index_j, 'flag')
-#     return neighbor
-#
-# # Returns a list of safe neighbors to traverse - it is used in process_current_cell function and it returns the list to that function
-# def flag_cells_as_safe(self, current_neighbors):
-#     neighbor = self.get_hidden_cells_list(current_neighbors)
-#     for i in neighbor:
-#         obj = self.get_cur_cell_instance(i)
-#         obj.status = 1  # whether or not it is a mine or safe
-#         obj.status = 0  # whether or not it is a mine or safe
-#     return neighbor
-#
-#
-# # Functionality: This function takes a list, and uses process_current_cell to process each cell
-# def traverse_board(self, list_cells):
-#     print("About to start traverse_board")
-#     # this will make sure all cells from the board are either flagged, or marked safe or as mine
-#     while self.unvisited_cells:
-#         print(self.traverse_cells)
-#         time.sleep(0.2)
-#         self.cell_traverse_list(list_cells)
-#         if self.traverse_cells:
-#             index = self.traverse_cells.pop(0)
-#             index_board_i = index[0]
-#             index_board_j = index[1]
-#             list_cells = self.process_current_cell(index_board_i, index_board_j)
-#         else:
-#             self.traverse_cells.append( self.unvisited_cells.pop() )
-#
-#
-#     if not self.unvisited_cells:
-#         print("EXITING $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$")
-#
-# # This funcadds new list safe neighbors that needs to be explored to an already existing list with cells
-# def cell_traverse_list(self,list_cells):
-#     if len(list_cells) > 0:
-#         for i in list_cells:
-#             if i not in self.traverse_cells:
-#                 self.traverse_cells.append(i)
+    #Functionality: checks current_cell neighbors and determine which cell is a hidden cell, which cell is already visited and what cell is a mine
+    def process_current_cell(self, i, j):
+    ## Functionality: checks current_cell neighbors and determine which cell is a hidden cell, which cell is already
+    ## visited and what cell is a mine
+        print("-----")
+        print(self.array_board)
+        status = self.environment_obj.get_cell_value(self.array_board, i, j)
+        obj = self.get_cur_cell_instance([i, j])
+
+        if status == 1:
+            self.environment_obj.color_cell("", i, j, 1)  # This code marks the cell on GUI board
+            self.mine_cells.append([i, j])
+            if [i, j] in self.unvisited_cells:
+                self.unvisited_cells.remove([i, j])
+
+        if status != 1:
+            self.visited_cells.append([i, j])  # adds current processed cell in list of visited cells if its safe
+            if [i, j] in self.unvisited_cells:
+                self.unvisited_cells.remove([i, j])  # removing index from unvisited cells
+            obj.status = 0  # identifies the index as safe by marking it 0
+
+            obj.clue = self.environment_obj.get_clue(self.array_board, i,
+                                                     j)  # assigns clue (clue is number of mines in adjacent neighbors
+
+            if obj.clue==0:
+                self.environment_obj.color_cell('', i, j, 0)  # This code marks the cell on GUI boards
+            else:
+                self.environment_obj.color_cell(str(obj.clue), i, j, 0)  # This code marks the cell on GUI boards
+
+            current_neighbors = self.get_neighbors_current_cell(i, j)  # gets a list of neighbors of current cells
+
+            # In adjacent cells, returns a value for neighbors that are already visited/revealed
+            # Returns just a value not cell indexs that are visited
+            visited = self.get_visited_cells(current_neighbors)
+
+            obj.safe_n = visited
+
+            # In adjacent cells, returns a value for neighbors that are hidden/unrevealed cells - Returns just a value
+            # not cell indexs that are hidden
+            hidden = self.get_hidden_cells(current_neighbors)
+            obj.cells_still_unexplored_in_neighbors = hidden
+
+            # In adjacent cells, returns a value for neighbors that are mines - Returns just a value not cell indexs
+            # that are flagged or mines
+            mines = self.get_mines_in_neighbor_cells(current_neighbors)
+            obj.appearing_mines_in_neighbors = mines
+
+            obj.print_cell_info()  # To print each cell info
+
+            # code below is for the basic algorithm from the description
+            a = self.mine_estimate(obj.clue, mines,
+                                   hidden)  # this checks the mine code from basic algorithm in the description
+            if a:
+                self.flag_cells(current_neighbors)
+            else:
+                self.safe_estimator(obj.clue, visited, hidden)
+                ret_list = self.flag_cells_as_safe(current_neighbors)
+
+                cell_to_delete = [i, j]
+                self.delete_var(cell_to_delete) # Removes revealed cell from KB
+
+                return ret_list
+
+        return []
+
+
+    # If a cell is flagged then this function will flag the cell
+    def flag_cells_basic(self, current_neighbors):
+        neighbor = self.get_hidden_cells_list(current_neighbors)
+        for i in neighbor:
+            obj = self.get_cur_cell_instance(i)
+            obj.status = 1  # whether or not it is a mine or safe
+            self.mine_cells.append(i)
+            self.unvisited_cells.remove( i )
+            if i in self.traverse_cells:
+                self.traverse_cells.remove( i )
+            color = (255, 255, 255)
+            index_i = i[0]
+            index_j = i[1]
+            self.environment_obj.color_cell('', index_i, index_j, 'flag')
+        return neighbor
+
+    # Returns a list of safe neighbors to traverse - it is used in process_current_cell function and it returns the list to that function
+    def flag_cells_as_safe_basic(self, current_neighbors):
+        neighbor = self.get_hidden_cells_list(current_neighbors)
+        for i in neighbor:
+            obj = self.get_cur_cell_instance(i)
+            obj.status = 1  # whether or not it is a mine or safe
+            obj.status = 0  # whether or not it is a mine or safe
+        return neighbor
+
+
+    # Functionality: This function takes a list, and uses process_current_cell to process each cell
+    def traverse_board(self, list_cells):
+        # this will make sure all cells from the board are either flagged, or marked safe or as mine
+        while self.unvisited_cells:
+            time.sleep(0)
+            self.cell_traverse_list_basic(list_cells)
+            if self.traverse_cells:
+                index = self.traverse_cells.pop(0)
+                index_board_i = index[0]
+                index_board_j = index[1]
+                list_cells = self.process_current_cell(index_board_i, index_board_j)
+            else:
+                self.traverse_cells.append( self.unvisited_cells.pop() )
+
+
+        if not self.unvisited_cells:
+            print("EXITING $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$")
+
+    # This funcadds new list safe neighbors that needs to be explored to an already existing list with cells
+    def cell_traverse_list_basic(self,list_cells):
+        if len(list_cells) > 0:
+            for i in list_cells:
+                if i not in self.traverse_cells:
+                    self.traverse_cells.append(i)

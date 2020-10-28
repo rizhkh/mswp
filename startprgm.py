@@ -83,6 +83,9 @@ class start:
         for i in safe_cells_to_traverse:
             self.environment_class.color_cell('T', i[0], i[1], 'testing')
 
+        #self.agent_class.traverse_board(safe_cells_to_traverse) # For basic algorithm
+
+        #for advanced algorithm i worte
         self.agent_class.traverse(safe_cells_to_traverse) # to automate movement
 
     def forSimpleWindow(self):
