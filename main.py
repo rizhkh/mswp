@@ -50,9 +50,9 @@ if __name__ == '__main__':
         dim = int(row)
         if dim<=10:
             resolution = (201, 201)
-        if 10 < dim <= 20:
-            resolution = (403, 403)
-        if 20 < dim <= 30:
+        elif 10 < dim and  dim<= 20:
+            resolution = (395, 395)
+        elif 20 < dim and  dim <= 30:
             resolution = (650, 650)
         else:
             resolution = (800, 800)

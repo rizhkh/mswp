@@ -11,10 +11,12 @@ class Agnt:
     visited_cells = []  # just stores index of cells that are visited
     mine_cells = []  # list of cells that are mines and they have been revealed - not hidden on board anymore
     unvisited_cells = []
+    safe_cells = []
     traverse_cells = []  # list of cells that needs to be processed / traversed
     knowledge_base = []
     mine_kb = []
     mines_left = 0
+    mine_location = []
     mine_count = 0
     environment_obj = None
     board_array_agent = np.zeros((0, 0), dtype=int)
@@ -535,46 +537,52 @@ class Agnt:
         var_0 = var_1 = var_2 = 0
         for i in self.knowledge_base:
             if [index_i, index_j] in i:
-                clue = i[-1]
-                clue = clue[0]
+                self.delete_var([index_i, index_j])
 
-                if len(i) == 2:  # (a,0)
-                    clue = i[-1]
-                    clue = clue[0]
-                    if clue>1:
-                        clue = clue - 1
-                        eq = [ i[0] , [clue]]
-                        self.knowledge_base.remove(i)
+                # clue = i[-1]
+                # clue = clue[0]
+                #
+                # if len(i) == 2:  # (a,0)
+                #     clue = i[-1]
+                #     clue = clue[0]
+                #     if clue >= 1:
+                #         clue = clue - 1
+                #         eq = [ i[0] , [clue]]
+                #         self.knowledge_base.remove(i)
+                #
+                # if len(i) == 3:  # (a,b,0)
+                #     if i[0] == [index_i, index_j]:  # (mine,b,0)
+                #         var_0 = i[1]
+                #     else:  # (a,mine,0)
+                #         var_0 = i[0]
+                #     self.knowledge_base.remove(i)
+                #     if clue != 0:
+                #         clue = clue - 1
+                #     eq = [var_0, [clue]]
+                #     self.knowledge_base.append(eq)
+                #
+                # if len(i) == 4:  # (a,b,c,0)
+                #     eq = None
+                #     if clue != 0:
+                #         clue = clue - 1
+                #     if i[0] == [index_i, index_j]:  # (mine, b, c, 0)
+                #         var_1 = i[1]
+                #         var_2 = i[2]
+                #         eq = [var_1, var_2, [clue]]
+                #     if i[1] == [index_i, index_j]:  # (a, mine, c, 0)
+                #         var_0 = i[0]
+                #         var_2 = i[2]
+                #         eq = [var_0, var_2, [clue]]
+                #     if i[2] == [index_i, index_j]:  # (a, b, mine, 0)
+                #         var_0 = i[0]
+                #         var_1 = i[1]
+                #         eq = [var_0, var_1, [clue]]
+                #     self.knowledge_base.remove(i)
+                #     self.knowledge_base.append(eq)
 
-                if len(i) == 3:  # (a,b,0)
-                    if i[0] == [index_i, index_j]:  # (mine,b,0)
-                        var_0 = i[1]
-                    else:  # (a,mine,0)
-                        var_0 = i[0]
-                    self.knowledge_base.remove(i)
-                    if clue != 0:
-                        clue = clue - 1
-                    eq = [var_0, [clue]]
-                    self.knowledge_base.append(eq)
-
-                if len(i) == 4:  # (a,b,c,0)
-                    eq = None
-                    if clue != 0:
-                        clue = clue - 1
-                    if i[0] == [index_i, index_j]:  # (mine, b, c, 0)
-                        var_1 = i[1]
-                        var_2 = i[2]
-                        eq = [var_1, var_2, [clue]]
-                    if i[1] == [index_i, index_j]:  # (a, mine, c, 0)
-                        var_0 = i[0]
-                        var_2 = i[2]
-                        eq = [var_0, var_2, [clue]]
-                    if i[2] == [index_i, index_j]:  # (a, b, mine, 0)
-                        var_0 = i[0]
-                        var_1 = i[1]
-                        eq = [var_0, var_1, [clue]]
-                    self.knowledge_base.remove(i)
-                    self.knowledge_base.append(eq)
+        for i in self.knowledge_base:
+            if [index_i, index_j] in i:
+                print(i)
 
     def subset_helper(self, var_1, var_2):
         # a + b + c = 2 => (a+b) + c and a+b = 1 we can deduce that c would be flagged as c=1
@@ -1027,6 +1035,7 @@ class Agnt:
 
         if status == 1 and self.mine_count < self.mines_left :
             self.flag_mine(i,j,1)
+            self.mine_location.append([i,j])
 
         if status != 1 or self.mine_count >= self.mines_left:
 
@@ -1059,6 +1068,9 @@ class Agnt:
 
             # I need to get get a list of hidden cells from neighbors
             # Returns unrevealed neighbor cells of the list current_neighbors
+            if obj.clue == 0:
+                self.safe_cells.append([i,j])
+
             ret_list = self.flag_cells_as_safe(current_neighbors)
 
             cell_to_delete = [i, j]
@@ -1095,7 +1107,7 @@ class Agnt:
 
     def traverse(self, list_cells):
         while self.unvisited_cells:
-            time.sleep(0)
+            #time.sleep(1)
             self.cell_traverse_list_basic(list_cells)  # add passed list to list of cells to be explored
 
             if self.traverse_cells:
@@ -1185,17 +1197,47 @@ class Agnt:
 
         if not self.unvisited_cells:
 
-            # time.sleep(3)
-            # if self.cells_that_are_flagged:
-            #     for i in self.cells_that_are_flagged:
-            #         for eq in self.knowledge_base:
-            #             if len(eq)==2:
-            #                 if i in eq:
-            #                     clue = i[-1]
-            #                     if clue == 0:
-            #                         self.highlight_board(i[0], i[1])
-            #                     if clue != 1:
-            #                         self.highlight_board(i[0], i[1])
+            #time.sleep(3)
+            if self.cells_that_are_flagged:
+                for i in self.cells_that_are_flagged:
+                    ret_list = self.get_neighbors_current_cell(i[0],i[1])
+                    #print("cc : " , i)
+                    #print( "N: ", ret_list)
+                    for j in ret_list:
+                        if j in self.safe_cells:
+                            #print("Safe neighbor: " , j)
+                            #time.sleep(0.1)
+                            self.highlight_board(i[0], i[1])
+
+            # now go through each cell in the board get its value from the board
+            # check neighbors and see if any neighbor is in open mine and if clue == mine
+            # then check if any flag exists in neighbor if it does open that cell
+
+            # for index_i in range(0, self.row):
+            #     for index_j in range(0, self.row):
+            #         status = self.environment_obj.get_cell_value(self.array_board, index_i, index_j)
+            #         ret_list = self.get_neighbors_current_cell( index_i, index_j)
+            #         mc = 0
+            #         for j in ret_list:
+            #             if j in self.mine_location:
+            #                 mc += 1
+            #         if mc == status and status != 0:
+            #             for j in ret_list:
+            #                 if j in self.cells_that_are_flagged:
+            #                     status = self.environment_obj.get_cell_value(self.array_board, index_i, index_j)
+            #                     #if len(status) <=1:
+            #                     time.sleep(0.2)
+            #                     #self.highlight_board(j[0], j[1])
+            #                     self.highlight_board( index_i, index_j)
+
+                    # if status == 0:
+                    #     for j in ret_list:
+                    #         if j in self.cells_that_are_flagged:
+                    #             time.sleep(0.2)
+                    #             self.highlight_board(j[0], j[1])
+
+
+
 
             print("Total mines found:", self.mine_count)
             print("EXITING ")
@@ -1206,6 +1248,8 @@ class Agnt:
         # canvas_arr_i = i * 20  # the reason it is being multiplied is because the cell size is set to 20 - if its the orignal value then it causes GUI problems
         # canvas_arr_j = j * 20
         status = self.environment_obj.get_cell_value(self.array_board,i,j)
+        if status==0:
+            self.environment_obj.color_cell('', i, j, 0)
         if status != 1:
             val = self.environment_obj.get_clue(self.array_board,i,j)
             self.environment_obj.color_cell(str(val), i, j,0)
