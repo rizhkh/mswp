@@ -3,6 +3,7 @@ import startprgm
 import tkinter as tk
 import numpy as np
 import time
+import genData
 from ast import literal_eval
 
 row = 10  # row
@@ -12,8 +13,6 @@ mine_density = 20
 if __name__ == '__main__':
     pygame.init()  # initializes the pygame object - Required to run the window on screen
     resolution = (201,201) #(420, 420)  # screen resolution
-
-    #https://www.python-course.eu/tkinter_entry_widgets.php
 
     master = tk.Tk()
     tk.Label(master, text="Dimension (D x D)").grid(row=0)
@@ -91,3 +90,11 @@ if __name__ == '__main__':
                             m.click_cell(m, i[1],i[0])
                             #m.rect_clicked( (150,150,150) , i[1],i[0]) # the reason [1] [0] are in reverse (it should be [0][1] is because pygame is storing index in reverse
                             #print(event.pos)
+
+
+    # #To generate graphs
+    # g = genData.generateData()
+    # g.strategy_one()
+    # g.strategy_Two()
+    # # g.strategy_Own()
+    # # g.avg_of_all()

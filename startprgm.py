@@ -84,9 +84,8 @@ class start:
             self.environment_class.color_cell('T', i[0], i[1], 'testing')
 
         #self.agent_class.traverse_board(safe_cells_to_traverse) # For basic algorithm
-
         #for advanced algorithm i worte
-        self.agent_class.traverse(safe_cells_to_traverse) # to automate movement
+        self.agent_class.traverse(safe_cells_to_traverse) # for my own aglorithm
 
     def forSimpleWindow(self):
         for i in range(0 , len( self.board_array_2) ):

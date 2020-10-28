@@ -897,7 +897,7 @@ class Agnt:
     def flag_mine(self,i,j, status):
         self.environment_obj.color_cell("", i, j, status)  # This code marks the cell on GUI board
         self.mine_cells.append([i, j])  # when a mine is found on revealing cell it is added to mine_cells
-        self.mine_count += 1
+        self.mine_count = self.mine_count + 1
         self.mines_left -= 1
         self.remove_mine_from_kb(i, j)
         if [i, j] in self.unvisited_cells:
@@ -1034,7 +1034,7 @@ class Agnt:
 
 
                 # Flags mines here
-                if len(self.flagged_cells) >= 4 :
+                if len(self.flagged_cells) >= 1 :
                     fgc = self.flagged_cells.pop(0)
                     index_i = fgc[0]
                     index_j = fgc[1]
