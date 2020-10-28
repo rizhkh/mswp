@@ -597,12 +597,83 @@ class Agnt:
             var_1 = passed_list[0]
             var_2 = passed_list[1]
 
-            # if len(passed_list) >= 5:
-            #     var_1 = passed_list[0]
-            #     var_2 = passed_list[1]
-            #     var_3 = passed_list[2]
-            #     var_4 = passed_list[3]
-            #     var_5 = passed_list[4]
+            if len(passed_list) == 6: # A + B + C + D + E
+                var_1 = passed_list[0]
+                var_2 = passed_list[1]
+                var_3 = passed_list[2]
+                var_4 = passed_list[3]
+                var_5 = passed_list[4]
+
+                val_1 = self.get_info(var_1, 2)
+                val_2 = self.get_info(var_2, 2)
+                val_3 = self.get_info(var_3, 2)
+                val_4 = self.get_info(var_4, 2)
+                val_5 = self.get_info(var_5, 2)
+
+                status = False
+                for i in range(0,9):
+                    eq = [ val_1,  val_2, val_3, val_4, [i]]
+                    if eq in self.knowledge_base:
+                        return passed_list[4]
+                for i in range(0,9):
+                    eq = [ val_2, val_3, val_4, val_5,[i]]
+                    if eq in self.knowledge_base:
+                        return passed_list[0]
+
+                # now we solve for 2 sub each
+                eq_1 = None
+                eq_2 = None
+                eq_3 = None
+                eq_4 = None
+                for i in range(0,9):
+                    eq1 = [ val_1,  val_2, [i]]
+                    eq2 = [ val_2,  val_3, [i]]
+                    eq3 = [val_3, val_4, [i]]
+                    eq4 = [val_4, val_5, [i]]
+
+                    if eq1 in self.knowledge_base:
+                        eq_1 = eq1
+                    if eq2 in self.knowledge_base:
+                        eq_2 = eq2
+                    if eq3 in self.knowledge_base:
+                        eq_3 = eq3
+                    if eq4 in self.knowledge_base:
+                        eq_4 = eq4
+
+                # a b c d e
+                index = 0
+                none_count = 0
+
+                if val_1 == None:
+                    index = 1
+                    none_count += 1
+                if val_2 == None:
+                    index = 2
+                    none_count += 1
+                if val_3 == None:
+                    index = 3
+                    none_count += 1
+                if val_4 == None:
+                    index = 4
+                    none_count += 1
+                if val_5 == None:
+                    index = 5
+                    none_count += 1
+
+                if none_count == 1:
+                    for i in range(0,9):
+                        if index ==  1: # xA b c d e
+                            equation = [ eq2, eq4, [i]]
+                            clue_equation = equation[-1]
+                            clue_equation = clue_equation[0]
+                            if (val - clue_equation) == 1 or (clue_equation - val) == 1:
+                                return passed_list[0]
+                        if index ==  1: # a b c d xe
+                            equation = [ eq1, eq3, [i]]
+                            clue_equation = equation[-1]
+                            clue_equation = clue_equation[0]
+                            if (val - clue_equation) == 1 or (clue_equation - val) == 1:
+                                return passed_list[4]
 
             if len(passed_list) == 4:
 
@@ -1095,21 +1166,6 @@ class Agnt:
                     self.update_cell(cells_to_flag)
                     nl = []
 
-                    # for i in cells_to_flag:
-                    #     for j in self.knowledge_base:
-                    #         if len(j) == 2:
-                    #             if i in j:
-                    #                 clue = j[-1]
-                    #                 clue = clue[0]
-                    #                 if clue == 1:
-                    #                     if i not in nl:
-                    #                         nl.append(i)
-                    #                 self.knowledge_base.remove(j) # Tries to remove duplicates in KB after we are sure
-                    #                 # a cell is mine but it exists with a value
-                    #
-                    # for i in nl:
-                    #     if i not in self.flagged_cells:
-                    #         nl.remove(i)
 
                     index_i = fgc[0]
                     index_j = fgc[1]
@@ -1129,7 +1185,18 @@ class Agnt:
 
         if not self.unvisited_cells:
 
-            #time.sleep(5)
+            # time.sleep(3)
+            # if self.cells_that_are_flagged:
+            #     for i in self.cells_that_are_flagged:
+            #         for eq in self.knowledge_base:
+            #             if len(eq)==2:
+            #                 if i in eq:
+            #                     clue = i[-1]
+            #                     if clue == 0:
+            #                         self.highlight_board(i[0], i[1])
+            #                     if clue != 1:
+            #                         self.highlight_board(i[0], i[1])
+
             print("Total mines found:", self.mine_count)
             print("EXITING ")
 
@@ -1246,7 +1313,7 @@ class Agnt:
             time.sleep(0)
             self.cell_traverse_list_basic(list_cells)
             if self.traverse_cells:
-                index = self.traverse_cells.pop(0)
+                index = self.traverse_cells.pop(-1)
                 index_board_i = index[0]
                 index_board_j = index[1]
                 list_cells = self.process_current_cell(index_board_i, index_board_j)

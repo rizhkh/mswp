@@ -11,7 +11,7 @@ mine_density = 15
 
 if __name__ == '__main__':
     pygame.init()  # initializes the pygame object - Required to run the window on screen
-    resolution = (450,450) #(420, 420)  # screen resolution
+    resolution = (201,201) #(420, 420)  # screen resolution
 
     #https://www.python-course.eu/tkinter_entry_widgets.php
 
@@ -35,11 +35,7 @@ if __name__ == '__main__':
 
     tk.Button(master,
               text='Start',
-              command= lambda: [master.quit() , get_fields()] ) .grid(row=3,
-                                        column=0,
-                                        sticky=tk.W,
-                                        pady=4)
-
+              command= lambda: [master.quit() , get_fields()] ) .grid(row=3, column=0, sticky=tk.W,pady=4)
 
     tk.mainloop()
 
@@ -51,7 +47,15 @@ if __name__ == '__main__':
         mine_density = 15
 
     else:
-        resolution = (800, 800)
+        dim = int(row)
+        if dim<=10:
+            resolution = (201, 201)
+        if 10 < dim <= 20:
+            resolution = (403, 403)
+        if 20 < dim <= 30:
+            resolution = (650, 650)
+        else:
+            resolution = (800, 800)
 
     row = int(row)
     col = row
@@ -59,14 +63,9 @@ if __name__ == '__main__':
 
     flags = pygame.DOUBLEBUF
     ThingsToAppearOnScreen_Display = pygame.display.set_mode(resolution,flags)  # This sets the width and height of the screen that pops up
-
     ThingsToAppearOnScreen_Display_2 = pygame.display.set_mode(resolution, flags)
-
     m = startprgm.start(ThingsToAppearOnScreen_Display, row, col, mine_density)
-
     m.start_algorithm(m)
-
-
     window_display_status = True
 
 
@@ -80,10 +79,8 @@ if __name__ == '__main__':
                 exit()
             if event.type == pygame.MOUSEBUTTONDOWN:
 
-                # functionality: canvas has blocks drawn with space of 20, code below takes the index of where the mouse was clicked
-                # then compares that x,y index (event.pos - the index of mouse click on screen) to the index x,y of box/grid on canvas
-                # comparison functionality: as rect index are multiples of 20, each event.pos checks whether the event.pos is > then current
-                # processed index and less then the next index to be processed
+                # functionality: Click functionality for the first click
+                # 20 is for the GUI setup
                 for i in mls:
                     next_i = i[0] + 20
                     next_j = i[1] + 20
