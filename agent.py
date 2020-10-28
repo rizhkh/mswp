@@ -1191,6 +1191,13 @@ class Agnt:
                                     if [index_i,index_j] not in self.cells_that_are_flagged:
                                         self.cells_that_are_flagged.append([index_i,index_j])
 
+                    # if self.cells_that_are_flagged:
+                    #     for i in self.cells_that_are_flagged:
+                    #         ret_list = self.get_neighbors_current_cell(i[0], i[1])
+                    #         for j in ret_list:
+                    #             if j in self.safe_cells:
+                    #                 self.highlight_board(i[0], i[1])
+
             # in case our list_cells or traverse_cells is empty
             else:
                 self.traverse_cells.append(self.unvisited_cells.pop())
@@ -1198,49 +1205,33 @@ class Agnt:
         if not self.unvisited_cells:
 
             #time.sleep(3)
-            if self.cells_that_are_flagged:
-                for i in self.cells_that_are_flagged:
-                    ret_list = self.get_neighbors_current_cell(i[0],i[1])
-                    #print("cc : " , i)
-                    #print( "N: ", ret_list)
-                    for j in ret_list:
-                        if j in self.safe_cells:
-                            #print("Safe neighbor: " , j)
-                            #time.sleep(0.1)
-                            self.highlight_board(i[0], i[1])
-
-            # now go through each cell in the board get its value from the board
-            # check neighbors and see if any neighbor is in open mine and if clue == mine
-            # then check if any flag exists in neighbor if it does open that cell
-
-            # for index_i in range(0, self.row):
-            #     for index_j in range(0, self.row):
-            #         status = self.environment_obj.get_cell_value(self.array_board, index_i, index_j)
-            #         ret_list = self.get_neighbors_current_cell( index_i, index_j)
-            #         mc = 0
+            # if self.cells_that_are_flagged:
+            #     for i in self.cells_that_are_flagged:
+            #         ret_list = self.get_neighbors_current_cell(i[0],i[1])
             #         for j in ret_list:
-            #             if j in self.mine_location:
-            #                 mc += 1
-            #         if mc == status and status != 0:
-            #             for j in ret_list:
-            #                 if j in self.cells_that_are_flagged:
-            #                     status = self.environment_obj.get_cell_value(self.array_board, index_i, index_j)
-            #                     #if len(status) <=1:
-            #                     time.sleep(0.2)
-            #                     #self.highlight_board(j[0], j[1])
-            #                     self.highlight_board( index_i, index_j)
+            #             if j in self.safe_cells:
+            #                 self.highlight_board(i[0], i[1])
 
-                    # if status == 0:
-                    #     for j in ret_list:
-                    #         if j in self.cells_that_are_flagged:
-                    #             time.sleep(0.2)
-                    #             self.highlight_board(j[0], j[1])
+            for i in range( 0 ,self.row):
+                for j in range( 0 ,self.row):
+                    ret_list = self.get_neighbors_current_cell( i, j)
+                    status = self.environment_obj.get_cell_value(self.array_board, i, j)
+                    val = self.environment_obj.get_clue(self.array_board, i, j)
 
+                    mine_presence = 0
+                    for n in ret_list:
+                        if n in self.mine_location:
+                            mine_presence += 1
+                    if status == 0:
+                        if mine_presence == val:
+                            for n in ret_list:
+                                if n in self.cells_that_are_flagged:
+
+                                    self.highlight_board( n[0], n[1])
 
 
 
             print("Total mines found:", self.mine_count)
-            print("EXITING ")
 
 
 
@@ -1248,11 +1239,12 @@ class Agnt:
         # canvas_arr_i = i * 20  # the reason it is being multiplied is because the cell size is set to 20 - if its the orignal value then it causes GUI problems
         # canvas_arr_j = j * 20
         status = self.environment_obj.get_cell_value(self.array_board,i,j)
-        if status==0:
-            self.environment_obj.color_cell('', i, j, 0)
         if status != 1:
             val = self.environment_obj.get_clue(self.array_board,i,j)
-            self.environment_obj.color_cell(str(val), i, j,0)
+            if val != 0:
+                self.environment_obj.color_cell(str(val), i, j,0)
+            if val == 0:
+                self.environment_obj.color_cell('', i, j,0)
         elif status == 1:   # IF THE CELL IS A MINE
             self.environment_obj.color_cell('', i, j,1)
 

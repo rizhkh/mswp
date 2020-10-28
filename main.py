@@ -7,7 +7,7 @@ from ast import literal_eval
 
 row = 10  # row
 col = 10  # col
-mine_density = 15
+mine_density = 20
 
 if __name__ == '__main__':
     pygame.init()  # initializes the pygame object - Required to run the window on screen
@@ -17,9 +17,9 @@ if __name__ == '__main__':
 
     master = tk.Tk()
     tk.Label(master, text="Dimension (D x D)").grid(row=0)
-    tk.Label(master, text="Mine Density").grid(row=1)
+    tk.Label(master, text="# of mines on board").grid(row=1)
     tk.Label(master, text="Leave blank to start on default ").grid(row=2)
-    tk.Label(master, text="[Default = 10x10 with 20 mine density] ").grid(row=8)
+    tk.Label(master, text="[Default = 10x10 with 20 mines] ").grid(row=8)
 
     e1 = tk.Entry(master)
     e2 = tk.Entry(master)
@@ -44,15 +44,15 @@ if __name__ == '__main__':
 
     if not mine_density and not row:
         row = 10
-        mine_density = 15
+        mine_density = 20
 
     else:
         dim = int(row)
         if dim<=10:
             resolution = (201, 201)
-        elif 10 < dim and  dim<= 20:
-            resolution = (395, 395)
-        elif 20 < dim and  dim <= 30:
+        elif dim<= 20:
+            resolution = (450, 450)
+        elif dim <= 30:
             resolution = (650, 650)
         else:
             resolution = (800, 800)
