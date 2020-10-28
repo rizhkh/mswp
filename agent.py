@@ -539,51 +539,6 @@ class Agnt:
             if [index_i, index_j] in i:
                 self.delete_var([index_i, index_j])
 
-                # clue = i[-1]
-                # clue = clue[0]
-                #
-                # if len(i) == 2:  # (a,0)
-                #     clue = i[-1]
-                #     clue = clue[0]
-                #     if clue >= 1:
-                #         clue = clue - 1
-                #         eq = [ i[0] , [clue]]
-                #         self.knowledge_base.remove(i)
-                #
-                # if len(i) == 3:  # (a,b,0)
-                #     if i[0] == [index_i, index_j]:  # (mine,b,0)
-                #         var_0 = i[1]
-                #     else:  # (a,mine,0)
-                #         var_0 = i[0]
-                #     self.knowledge_base.remove(i)
-                #     if clue != 0:
-                #         clue = clue - 1
-                #     eq = [var_0, [clue]]
-                #     self.knowledge_base.append(eq)
-                #
-                # if len(i) == 4:  # (a,b,c,0)
-                #     eq = None
-                #     if clue != 0:
-                #         clue = clue - 1
-                #     if i[0] == [index_i, index_j]:  # (mine, b, c, 0)
-                #         var_1 = i[1]
-                #         var_2 = i[2]
-                #         eq = [var_1, var_2, [clue]]
-                #     if i[1] == [index_i, index_j]:  # (a, mine, c, 0)
-                #         var_0 = i[0]
-                #         var_2 = i[2]
-                #         eq = [var_0, var_2, [clue]]
-                #     if i[2] == [index_i, index_j]:  # (a, b, mine, 0)
-                #         var_0 = i[0]
-                #         var_1 = i[1]
-                #         eq = [var_0, var_1, [clue]]
-                #     self.knowledge_base.remove(i)
-                #     self.knowledge_base.append(eq)
-
-        for i in self.knowledge_base:
-            if [index_i, index_j] in i:
-                print(i)
-
     def subset_helper(self, var_1, var_2):
         # a + b + c = 2 => (a+b) + c and a+b = 1 we can deduce that c would be flagged as c=1
         if len(var_2) > 1:
@@ -604,84 +559,6 @@ class Agnt:
             val = val[0]
             var_1 = passed_list[0]
             var_2 = passed_list[1]
-
-            if len(passed_list) == 6: # A + B + C + D + E
-                var_1 = passed_list[0]
-                var_2 = passed_list[1]
-                var_3 = passed_list[2]
-                var_4 = passed_list[3]
-                var_5 = passed_list[4]
-
-                val_1 = self.get_info(var_1, 2)
-                val_2 = self.get_info(var_2, 2)
-                val_3 = self.get_info(var_3, 2)
-                val_4 = self.get_info(var_4, 2)
-                val_5 = self.get_info(var_5, 2)
-
-                status = False
-                for i in range(0,9):
-                    eq = [ val_1,  val_2, val_3, val_4, [i]]
-                    if eq in self.knowledge_base:
-                        return passed_list[4]
-                for i in range(0,9):
-                    eq = [ val_2, val_3, val_4, val_5,[i]]
-                    if eq in self.knowledge_base:
-                        return passed_list[0]
-
-                # now we solve for 2 sub each
-                eq_1 = None
-                eq_2 = None
-                eq_3 = None
-                eq_4 = None
-                for i in range(0,9):
-                    eq1 = [ val_1,  val_2, [i]]
-                    eq2 = [ val_2,  val_3, [i]]
-                    eq3 = [val_3, val_4, [i]]
-                    eq4 = [val_4, val_5, [i]]
-
-                    if eq1 in self.knowledge_base:
-                        eq_1 = eq1
-                    if eq2 in self.knowledge_base:
-                        eq_2 = eq2
-                    if eq3 in self.knowledge_base:
-                        eq_3 = eq3
-                    if eq4 in self.knowledge_base:
-                        eq_4 = eq4
-
-                # a b c d e
-                index = 0
-                none_count = 0
-
-                if val_1 == None:
-                    index = 1
-                    none_count += 1
-                if val_2 == None:
-                    index = 2
-                    none_count += 1
-                if val_3 == None:
-                    index = 3
-                    none_count += 1
-                if val_4 == None:
-                    index = 4
-                    none_count += 1
-                if val_5 == None:
-                    index = 5
-                    none_count += 1
-
-                if none_count == 1:
-                    for i in range(0,9):
-                        if index ==  1: # xA b c d e
-                            equation = [ eq2, eq4, [i]]
-                            clue_equation = equation[-1]
-                            clue_equation = clue_equation[0]
-                            if (val - clue_equation) == 1 or (clue_equation - val) == 1:
-                                return passed_list[0]
-                        if index ==  1: # a b c d xe
-                            equation = [ eq1, eq3, [i]]
-                            clue_equation = equation[-1]
-                            clue_equation = clue_equation[0]
-                            if (val - clue_equation) == 1 or (clue_equation - val) == 1:
-                                return passed_list[4]
 
             if len(passed_list) == 4:
 
@@ -1204,13 +1081,14 @@ class Agnt:
 
         if not self.unvisited_cells:
 
-            #time.sleep(3)
+            # time.sleep(3)
             # if self.cells_that_are_flagged:
             #     for i in self.cells_that_are_flagged:
             #         ret_list = self.get_neighbors_current_cell(i[0],i[1])
             #         for j in ret_list:
             #             if j in self.safe_cells:
             #                 self.highlight_board(i[0], i[1])
+            #                 #self.cells_that_are_flagged.remove([i[0],i[1]])
 
             for i in range( 0 ,self.row):
                 for j in range( 0 ,self.row):
@@ -1229,16 +1107,15 @@ class Agnt:
 
                                     self.highlight_board( n[0], n[1])
 
-
-
             print("Total mines found:", self.mine_count)
+            print("Total cells flagged:", len(self.cells_that_are_flagged))
 
 
 
     def highlight_board(self,i,j):
         # canvas_arr_i = i * 20  # the reason it is being multiplied is because the cell size is set to 20 - if its the orignal value then it causes GUI problems
         # canvas_arr_j = j * 20
-        status = self.environment_obj.get_cell_value(self.array_board,i,j)
+        status = self.environment_obj.get_cell_value(self.array_board ,i,j)
         if status != 1:
             val = self.environment_obj.get_clue(self.array_board,i,j)
             if val != 0:
