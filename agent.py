@@ -1,6 +1,6 @@
 import numpy as np
 import copy
-from mswp.cellInformation import cell
+from cellInformation import cell
 import time
 
 
@@ -1106,9 +1106,6 @@ class Agnt:
                                 if n in self.cells_that_are_flagged:
 
                                     self.highlight_board( n[0], n[1])
-
-            print("Total mines found:", self.mine_count)
-            print("Total cells flagged:", len(self.cells_that_are_flagged))
 
 
 

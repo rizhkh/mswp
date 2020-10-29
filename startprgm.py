@@ -1,7 +1,7 @@
 import pygame as pygame
 import numpy as np
-from mswp.boardenvironment import environment
-from mswp.agent import Agnt
+from boardenvironment import environment
+from agent import Agnt
 
 class start:
     PYGAMEWIDTH = 300  # 600   # Do not change this: This is window sizing
