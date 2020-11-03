@@ -4,7 +4,7 @@ Designed a Minesweeper and an autonomous AI agent that plays on its own to solve
   <img src="ms.png">
 </p>
 
-## Installing & Running
+## Setting it up
 Download the complete project in one folder, import project in your IDE, compile and run.
 
 ## For command line
