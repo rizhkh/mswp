@@ -1,10 +1,6 @@
 import pygame as pygame
-import startprgm
+import src.data.run.startprgm as startprgm
 import tkinter as tk
-import numpy as np
-import time
-import genData
-from ast import literal_eval
 
 row = 10  # row
 col = 10  # col

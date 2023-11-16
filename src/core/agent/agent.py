@@ -1,6 +1,6 @@
 import numpy as np
 import copy
-from cellInformation import cell
+from src.core.cells.cellInformation import cell
 import time
 
 
